@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
+import 'package:learning_app/view/account_page/edit_profile/edit_profile.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
+import 'package:learning_app/view/checkout_page/checkout_page.dart';
+import 'package:learning_app/view/checkout_page/confrim_animated.dart/confrim_animated.dart';
 import 'package:learning_app/view/homepage/detail_page.dart';
 import 'package:learning_app/view/homepage/homepage.dart';
 import 'package:learning_app/view/homepage/see_all_page.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
 import 'package:learning_app/view/login_page/login_page.dart';
 import 'package:learning_app/view/my_learning/my_learning.dart';
+import 'package:learning_app/view/checkout_page/otp_submission/otp_submission.dart';
 import 'package:learning_app/view/register_page/register_page.dart';
 import 'package:learning_app/view/search_screen/search_screen.dart';
 import 'package:learning_app/view/slpash_screen/splash_screen.dart';
@@ -44,6 +48,10 @@ class _LearningAppState extends State<LearningApp> {
         '/seeall': (context) => const SeeAllPage(),
         '/detailpage': (context) => const DetailPage(),
         '/recommentions': (context) => const RecommentionsCard(),
+        '/editprofile': (context) => const EditProfile(),
+        '/checkout': (context) => const CheckoutPage(),
+        '/otp': (context) => OtpSubmission(),
+        '/confrim': (context) => ConfrimAnimated(),
       },
     );
   }

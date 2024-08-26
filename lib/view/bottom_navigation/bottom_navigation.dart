@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
 import 'package:learning_app/view/homepage/homepage.dart';
+import 'package:learning_app/view/my_learning/my_learning.dart';
 import 'package:learning_app/view/search_screen/search_screen.dart';
+import 'package:learning_app/view/wishlist_page/wishlist_page.dart';
 
 class BottomNavigation extends StatefulWidget {
   final int initialIndex;
@@ -22,12 +24,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   List screenlist = [
     Homepage(),
     SearchScreen(),
-    Container(
-      color: Colors.green,
-    ),
-    Container(
-      color: Colors.blue,
-    ),
+    MyLearning(),
+    WishlistPage(),
     AccountPage()
   ];
   int selectedIndex = 0;

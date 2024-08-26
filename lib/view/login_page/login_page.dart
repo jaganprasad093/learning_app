@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
+import 'package:learning_app/core/widgets/custom_textformfield.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -28,6 +29,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(
+                  height: 80,
+                ),
                 CircleAvatar(
                   radius: 70,
                   backgroundImage: AssetImage(ImageConstants.splashscreen),
@@ -35,16 +39,9 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 40,
                 ),
-                TextFormField(
+                CustomTextField(
                   controller: emailController,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    hintText: "Email address",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  hintText: "Email address",
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the email address';
@@ -56,26 +53,10 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 SizedBox(height: 20),
-                TextFormField(
+                CustomTextField(
                   controller: passwordController,
-                  obscureText: invisible,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    hintText: "Password",
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          invisible = !invisible;
-                        });
-                      },
-                      child: Icon(
-                          invisible ? Icons.visibility : Icons.visibility_off),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  hintText: "Password",
+                  isPassword: true,
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the password';
@@ -87,30 +68,27 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 60,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: InkWell(
-                    onTap: () {
-                      // if (_formKey.currentState!.validate()) {}
-                      Navigator.pushNamed(context, "/bottomnavigation");
-                    },
-                    child: Container(
-                      height: 50,
-                      // width: 200,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.button_color,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                InkWell(
+                  onTap: () {
+                    // if (_formKey.currentState!.validate()) {}
+                    Navigator.pushNamed(context, "/bottomnavigation");
+                  },
+                  child: Container(
+                    height: 50,
+                    // width: 200,
+                    decoration: BoxDecoration(
+                      color: ColorConstants.button_color,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
                       ),
                     ),

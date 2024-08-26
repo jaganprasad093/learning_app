@@ -15,8 +15,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // appBar: AppBar(
-      //   leading:
-      //   leadingWidth: 300,
+      //   actions: [Icon(Icons.shopping_cart)],
       // ),
       body: SingleChildScrollView(
         child: Column(
@@ -27,14 +26,25 @@ class _HomepageState extends State<Homepage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Welcome, usernakme",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome, usernakme",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Text("sub titles")
+                    ],
                   ),
-                  Text("sub titles")
+                  InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "/checkout");
+                      },
+                      child: Icon(Icons.shopping_cart))
                 ],
               ),
             ),

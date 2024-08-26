@@ -7,29 +7,32 @@ import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class EditProfile extends StatefulWidget {
+  const EditProfile({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _EditProfileState extends State<EditProfile> {
   TextEditingController name_Controller = TextEditingController();
   TextEditingController email_Controller = TextEditingController();
-  TextEditingController password_controller = TextEditingController();
-  TextEditingController repass_Controller = TextEditingController();
-  bool invisible = true;
-  bool invisible2 = true;
+  TextEditingController phone_controller = TextEditingController();
+  TextEditingController note_Controller = TextEditingController();
+  TextEditingController date_Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  FocusNode focusNode = FocusNode();
 
+  final List<String> gender = [
+    "Male",
+    "Female",
+  ];
+  String? selectedGender;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Register",
+          "Edit profile",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -46,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: 40,
+                    height: 10,
                   ),
                   CircleAvatar(
                     radius: 70,
@@ -112,24 +115,61 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   SizedBox(height: 10),
-                  CustomTextField(
-                    controller: password_controller,
-                    hintText: "Password",
-                    isPassword: true,
+                  DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      // enabledBorder: OutlineInputBorder(
+                      //   borderRadius: BorderRadius.circular(20),
+                      // ),
+                      focusedBorder: OutlineInputBorder(),
+                      hintText: "Select gender",
+                      // fillColor: ColorConstants.button_color,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    value: selectedGender,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedGender = newValue;
+                      });
+                    },
+                    items: gender.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                     validator: (String? value) {
                       return (value == null || value.isEmpty)
-                          ? 'Please enter the password'
+                          ? 'Please select type'
                           : null;
                     },
                   ),
                   SizedBox(height: 10),
                   CustomTextField(
-                    controller: repass_Controller,
-                    hintText: "Re-enter",
-                    isPassword: true,
+                    suffixIcon: Icon(
+                      Icons.calendar_month_rounded,
+                    ),
+                    onTap: () => selectDate(context, date_Controller),
+                    controller: email_Controller,
+                    hintText: "Date",
                     validator: (String? value) {
                       return (value == null || value.isEmpty)
-                          ? 'Please enter the password'
+                          ? 'Please enter a date'
+                          : null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  CustomTextField(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                    controller: email_Controller,
+                    hintText: "Test",
+                    validator: (String? value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please enter a test'
                           : null;
                     },
                   ),
@@ -139,7 +179,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   InkWell(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        log("register sucess");
+                        Navigator.pop(context);
+                        log("edit sucess");
                       }
                     },
                     child: Container(
@@ -151,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       child: Center(
                         child: Text(
-                          "Register",
+                          "Edit profile",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -162,27 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 20,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/login");
-                    },
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Already registered? ",
-                        style: TextStyle(color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: "Login",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: ColorConstants.button_color,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    height: 10,
                   ),
                   SizedBox(
                     height: 30,
@@ -194,5 +215,27 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  DateTime selectedDate = DateTime.now();
+  Future<void> selectDate(
+      BuildContext context, TextEditingController controller) async {
+    log("selected date and time now---$selectedDate");
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2024, 1),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        String convertedDateTime =
+            "${picked.day.toString().padLeft(2, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.year.toString()}";
+        controller.value = TextEditingValue(text: convertedDateTime);
+      });
+      FocusScope.of(context).unfocus();
+    }
   }
 }

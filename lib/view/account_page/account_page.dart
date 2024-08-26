@@ -19,13 +19,16 @@ class AccountPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 20),
+            // SizedBox(
+            //   height: 20,
+            // ),
             Center(
               child: Stack(children: [
                 CircleAvatar(
                   backgroundImage: NetworkImage(
-                    "",
+                    "https://images.pexels.com/photos/34534/people-peoples-homeless-male.jpg?auto=compress&cs=tinysrgb&w=600",
                   ),
                   radius: 60,
                   // backgroundColor: Colors.grey.withOpacity(0.6),
@@ -50,33 +53,41 @@ class AccountPage extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Text("e-mail"),
-            SizedBox(height: 20),
-            Container(
-              color: Colors.grey.withOpacity(0.3),
-            ),
+            SizedBox(height: 40),
+
             Column(
               children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/editprofile");
+                  },
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Edit profile",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 InkWell(
                   onTap: () {},
                   child: Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.grey.shade300,
-                              child: Icon(Icons.person),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              "Wishlist",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ],
+                        Text(
+                          "Wishlist",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Icon(Icons.arrow_forward_ios_rounded)
                       ],
@@ -87,26 +98,11 @@ class AccountPage extends StatelessWidget {
                   height: 20,
                 ),
                 Container(
-                  height: 1,
-                  width: 200,
-                  color: Colors.grey.withOpacity(.3),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            child: Icon(Icons.policy),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
                           Text(
                             "Orders",
                             style: TextStyle(
@@ -122,26 +118,11 @@ class AccountPage extends StatelessWidget {
                   height: 20,
                 ),
                 Container(
-                  height: 1,
-                  width: 200,
-                  color: Colors.grey.withOpacity(.3),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            child: Icon(Icons.book_online_rounded),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
                           Text(
                             "About app",
                             style: TextStyle(
@@ -157,26 +138,11 @@ class AccountPage extends StatelessWidget {
                   height: 20,
                 ),
                 Container(
-                  height: 1,
-                  width: 200,
-                  color: Colors.grey.withOpacity(.3),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            child: Icon(Icons.settings),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
                           Text(
                             "Delete account",
                             style: TextStyle(
@@ -189,32 +155,19 @@ class AccountPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  height: 1,
-                  width: 200,
-                  color: Colors.grey.withOpacity(.3),
-                ),
-                SizedBox(
-                  height: 20,
+                  height: 80,
                 ),
                 InkWell(
-                  onTap: () async {},
+                  onTap: () async {
+                    Navigator.pushReplacementNamed(context, "/login");
+                  },
                   child: Container(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          "Log Out",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.red),
-                        ),
-                      ],
+                    child: Text(
+                      "Log Out",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: ColorConstants.button_color),
                     ),
                   ),
                 ),
