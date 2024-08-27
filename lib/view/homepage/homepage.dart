@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/widgets/image_slider.dart';
 import 'package:learning_app/view/homepage/widgets/card1.dart';
 import 'package:learning_app/view/homepage/widgets/card2.dart';
 
@@ -11,6 +12,14 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final urlImages = [
+    'https://images.unsplash.com/photo-1612825173281-9a193378527e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=499&q=80',
+    'https://images.unsplash.com/photo-1580654712603-eb43273aff33?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    'https://images.unsplash.com/photo-1627916607164-7b20241db935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80',
+    'https://images.unsplash.com/photo-1522037576655-7a93ce0f4d10?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    'https://images.unsplash.com/photo-1570829053985-56e661df1ca2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,15 +60,22 @@ class _HomepageState extends State<Homepage> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              height: 200,
-              width: 400,
-              color: ColorConstants.green,
-              child: Image.network(
-                "https://images.pexels.com/photos/27044393/pexels-photo-27044393/free-photo-of-a-black-and-white-photo-of-a-man-walking-his-dog-on-the-beach.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
-                fit: BoxFit.cover,
-              ),
+            ImageSlider(
+              imageUrls: [
+                "https://images.pexels.com/photos/27807137/pexels-photo-27807137/free-photo-of-a-red-and-white-tram-on-a-city-street.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+                "https://images.pexels.com/photos/13405879/pexels-photo-13405879.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+                "https://images.pexels.com/photos/27091202/pexels-photo-27091202/free-photo-of-a-woman-in-a-white-dress-and-yellow-bag-standing-on-a-street.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+              ],
             ),
+            // Container(
+            //   height: 200,
+            //   width: 400,
+            //   color: ColorConstants.green,
+            //   child: Image.network(
+            //     "https://images.pexels.com/photos/27044393/pexels-photo-27044393/free-photo-of-a-black-and-white-photo-of-a-man-walking-his-dog-on-the-beach.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(

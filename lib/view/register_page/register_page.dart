@@ -1,11 +1,12 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:learning_app/controller/register_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -19,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController email_Controller = TextEditingController();
   TextEditingController password_controller = TextEditingController();
   TextEditingController repass_Controller = TextEditingController();
+  TextEditingController phone_Controller = TextEditingController();
+
   bool invisible = true;
   bool invisible2 = true;
   final _formKey = GlobalKey<FormState>();
@@ -66,9 +69,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   SizedBox(height: 10),
                   IntlPhoneField(
+                    controller: phone_Controller,
                     disableLengthCheck: true,
-                    // focusNode: focusNode,
+                    focusNode: focusNode,
                     decoration: InputDecoration(
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: ColorConstants.red),
+                      ),
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       hintText: 'Phone Number',
@@ -78,6 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     languageCode: "en",
                     initialCountryCode: "IN",
+                    onSaved: (newValue) {},
                     onChanged: (phone) {
                       print(phone.completeNumber);
                     },
@@ -86,17 +95,43 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     validator: (PhoneNumber? phonenumber) {
                       if (phonenumber == null || phonenumber.number.isEmpty) {
-                        return 'enter phone number';
+                        return 'Enter phone number';
                       }
-                      RegExp regex = RegExp(
-                          r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$');
-                      if (!regex.hasMatch(phonenumber.toString())) {
+                      RegExp regex = RegExp(r'^\+?[0-9]{10,15}$');
+                      if (!regex.hasMatch(phonenumber.number)) {
                         return "Enter a valid phone number";
                       }
                       return null;
                     },
-                    // validator: (p0) {},
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
+                  // IntlPhoneField(
+                  //   decoration: InputDecoration(
+                  //     labelText: 'Phone Number',
+                  //     border: OutlineInputBorder(
+                  //       borderSide: BorderSide(),
+                  //     ),
+                  //   ),
+                  //   onChanged: (phone) {
+                  //     print(phone.completeNumber);
+                  //   },
+                  //   onCountryChanged: (country) {
+                  //     print('Country changed to: ' + country.name);
+                  //   },
+                  //   validator: (PhoneNumber? phonenumber) {
+                  //     if (phonenumber == null || phonenumber.number.isEmpty) {
+                  //       return 'enter phone number';
+                  //     }
+                  //     RegExp regex = RegExp(r'^\+?[0-9]{10,15}$');
+                  //     // if (!regex.hasMatch(phonenumber.toString())) {
+                  //     //   return "Enter a valid phone number";
+                  //     // }
+                  //     return null;
+                  //   },
+                  //   // autovalidateMode: AutovalidateMode.disabled,
+                  //   // validator: (p0) {},
+                  // ),
+
                   SizedBox(height: 10),
                   CustomTextField(
                     controller: email_Controller,
@@ -117,9 +152,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     hintText: "Password",
                     isPassword: true,
                     validator: (String? value) {
-                      return (value == null || value.isEmpty)
-                          ? 'Please enter the password'
-                          : null;
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter password';
+                      }
                     },
                   ),
                   SizedBox(height: 10),
@@ -128,19 +163,45 @@ class _RegisterPageState extends State<RegisterPage> {
                     hintText: "Re-enter",
                     isPassword: true,
                     validator: (String? value) {
-                      return (value == null || value.isEmpty)
-                          ? 'Please enter the password'
-                          : null;
+                      if (value == null || value.isEmpty) {
+                        return "re-enter password";
+                      }
+                      if (password_controller.text != value) {
+                        return 'Passwords do not match';
+                      }
+//                       final RegExp passwordRegExp = RegExp(
+//                         r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$',
+//                       );
+//                       if (!passwordRegExp.hasMatch(value)) {
+//                         return '''
+// Password must contain 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.''';
+//                       }
                     },
                   ),
                   SizedBox(
                     height: 40,
                   ),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (_formKey.currentState!.validate()) {
-                        log("register sucess");
+                        final RegExp passwordRegExp = RegExp(
+                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$',
+                        );
+                        if (!passwordRegExp
+                            .hasMatch(password_controller.text)) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(
+                                  "Password must contain 8 charaters including one uppercase character, one lowercase character,one special character and numbers")));
+                        } else {
+                          await context.read<RegisterController>().registerData(
+                              name_Controller.text,
+                              int.parse(phone_Controller.text),
+                              email_Controller.text,
+                              password_controller.text);
+                        }
                       }
+                      // log("phone--${int.parse(phone_Controller.text)}");
                     },
                     child: Container(
                       height: 50,

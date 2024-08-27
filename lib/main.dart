@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/notification_controlller.dart';
+import 'package:learning_app/controller/register_controller.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
 import 'package:learning_app/view/account_page/edit_profile/edit_profile.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
@@ -15,8 +17,11 @@ import 'package:learning_app/view/register_page/register_page.dart';
 import 'package:learning_app/view/search_screen/search_screen.dart';
 import 'package:learning_app/view/slpash_screen/splash_screen.dart';
 import 'package:learning_app/view/wishlist_page/wishlist_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationControlller().initNotification();
   runApp(LearningApp());
 }
 
@@ -30,29 +35,36 @@ class LearningApp extends StatefulWidget {
 class _LearningAppState extends State<LearningApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-      routes: {
-        '/splash': (context) => const SplashScreen(),
-        '/login': (context) => const LoginPage(),
-        '/register': (context) => const RegisterPage(),
-        '/bottomnavigation': (context) => const BottomNavigation(
-              initialIndex: 0,
-            ),
-        '/home': (context) => const Homepage(),
-        '/wishlist': (context) => const WishlistPage(),
-        '/mylearning': (context) => const MyLearning(),
-        '/account': (context) => const AccountPage(),
-        '/search': (context) => const SearchScreen(),
-        '/seeall': (context) => const SeeAllPage(),
-        '/detailpage': (context) => const DetailPage(),
-        '/recommentions': (context) => const RecommentionsCard(),
-        '/editprofile': (context) => const EditProfile(),
-        '/checkout': (context) => const CheckoutPage(),
-        '/otp': (context) => OtpSubmission(),
-        '/confrim': (context) => ConfrimAnimated(),
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => RegisterController(),
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(),
+        routes: {
+          '/splash': (context) => const SplashScreen(),
+          '/login': (context) => const LoginPage(),
+          '/register': (context) => const RegisterPage(),
+          '/bottomnavigation': (context) => const BottomNavigation(
+                initialIndex: 0,
+              ),
+          '/home': (context) => const Homepage(),
+          '/wishlist': (context) => const WishlistPage(),
+          '/mylearning': (context) => const MyLearning(),
+          '/account': (context) => const AccountPage(),
+          '/search': (context) => const SearchScreen(),
+          '/seeall': (context) => const SeeAllPage(),
+          '/detailpage': (context) => const DetailPage(),
+          '/recommentions': (context) => const RecommentionsCard(),
+          '/editprofile': (context) => const EditProfile(),
+          '/checkout': (context) => const CheckoutPage(),
+          '/otp': (context) => OtpSubmission(),
+          '/confrim': (context) => ConfrimAnimated(),
+        },
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_button.dart';
@@ -49,7 +50,9 @@ class OtpSubmission extends StatelessWidget {
                 CustomButton(
                   text: "Submit",
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, "/confrim");
+                    NotificationControlller().showNotification(
+                        id: 1, body: "one min ago", title: "Confrimed order");
+                    // Navigator.pushReplacementNamed(context, "/confrim");
                   },
                 ),
                 SizedBox(

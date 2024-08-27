@@ -34,7 +34,7 @@ class ConfrimAnimated extends StatelessWidget {
             ),
             CustomButton(
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, "/homepage");
+                  Navigator.pushReplacementNamed(context, "/bottomnavigation");
                 },
                 text: "Back to home")
           ],
