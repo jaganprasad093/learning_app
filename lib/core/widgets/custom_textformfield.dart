@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:learning_app/core/constants/color_constants.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -14,8 +15,12 @@ class CustomTextField extends StatelessWidget {
   final String? errorText;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final int? minLines;
+  final bool? readOnly;
+  bool? enabled;
+  final int? maxLines;
 
-  const CustomTextField({
+  CustomTextField({
     Key? key,
     required this.controller,
     required this.hintText,
@@ -29,6 +34,10 @@ class CustomTextField extends StatelessWidget {
     this.errorText,
     this.keyboardType,
     this.maxLength,
+    this.minLines,
+    this.readOnly,
+    this.enabled,
+    this.maxLines,
   }) : super(key: key);
 
   @override
@@ -38,12 +47,22 @@ class CustomTextField extends StatelessWidget {
     return StatefulBuilder(
       builder: (context, setState) {
         return TextFormField(
-          onTap: () {},
+          maxLines: maxLines,
+          enabled: enabled,
+          readOnly: readOnly ?? false,
+          onTap: onTap,
           controller: controller,
           obscureText: obscureText,
           maxLength: maxLength,
+          minLines: minLines,
           keyboardType: keyboardType,
           decoration: InputDecoration(
+            disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: ColorConstants.primary_black.withOpacity(.5),
+                )),
+            prefixIcon: prefix,
             counterText: "",
             errorText: errorText,
             contentPadding: contentPadding == null

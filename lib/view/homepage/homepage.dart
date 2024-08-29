@@ -3,6 +3,7 @@ import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/widgets/image_slider.dart';
 import 'package:learning_app/view/homepage/widgets/card1.dart';
 import 'package:learning_app/view/homepage/widgets/card2.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -19,6 +20,20 @@ class _HomepageState extends State<Homepage> {
     'https://images.unsplash.com/photo-1522037576655-7a93ce0f4d10?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
     'https://images.unsplash.com/photo-1570829053985-56e661df1ca2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
   ];
+  var name;
+  var email;
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    name = prefs.getString("name") ?? "";
+    email = prefs.getString("email") ?? "";
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +57,7 @@ class _HomepageState extends State<Homepage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Welcome, usernakme",
+                        "Welcome, $name",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),

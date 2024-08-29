@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/register_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
-import 'package:learning_app/core/widgets/custom_button.dart';
+import 'package:learning_app/core/widgets/pop_up_screen.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +31,7 @@ class _VerificationState extends State<Verification> {
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     var provider = context.watch<RegisterController>();
     TextEditingController otp_controller = TextEditingController();
     final defaultPinTheme = PinTheme(
@@ -46,6 +47,7 @@ class _VerificationState extends State<Verification> {
         border: Border.all(color: Colors.transparent),
       ),
     );
+
     return Scaffold(
       appBar: AppBar(
         leading: Text(""),
@@ -58,97 +60,168 @@ class _VerificationState extends State<Verification> {
         centerTitle: true,
       ),
       body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Container(
-            margin: const EdgeInsets.only(top: 40),
-            width: double.infinity,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 100,
-                ),
-                const Text(
-                  "Verification",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 40),
-                  child: const Text(
-                    "Enter the code sent to your email",
+        // onTap: () {
+        //   FocusScope.of(context).unfocus();
+        // },
+        child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Container(
+              margin: const EdgeInsets.only(top: 40),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  SizedBox(height: 100),
+                  const Text(
+                    "Verification",
                     style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
+                      color: Colors.black,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                Pinput(
-                  controller: otp_controller,
-                  length: 4,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: defaultPinTheme.copyWith(
-                    decoration: defaultPinTheme.decoration!.copyWith(
-                      border: Border.all(color: Colors.green),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 40),
+                    child: const Text(
+                      "Enter the code sent to your email",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                  onCompleted: (pin) => debugPrint(pin),
-                ),
-                SizedBox(
-                  height: 100,
-                ),
-                InkWell(
-                  onTap: () {
-                    provider.otp_submission(
-                        otp_controller.text, email ?? "1", context);
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 400,
-                    decoration: BoxDecoration(
-                      color: ColorConstants.button_color,
-                      borderRadius: BorderRadius.circular(10),
+                  Pinput(
+                    // closeKeyboardWhenCompleted: true,
+                    errorText: provider.error_message,
+                    forceErrorState: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter OTP";
+                      }
+                      if (value.length != 4) {
+                        return "Enter a valid 4-digit OTP";
+                      }
+                      return null;
+                    },
+                    controller: otp_controller,
+                    length: 4,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: defaultPinTheme.copyWith(
+                      decoration: defaultPinTheme.decoration!.copyWith(
+                        border: Border.all(color: Colors.green),
+                      ),
                     ),
-                    child: Center(
-                      child: provider.isLoading
-                          ? Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: CircularProgressIndicator(
-                                color: ColorConstants.primary_white,
+                  ),
+                  SizedBox(height: 100),
+                  InkWell(
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        provider.otp_submission(
+                            otp_controller.text, email ?? "1", context);
+                      }
+                      // showDialogWithFields();
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 400,
+                      decoration: BoxDecoration(
+                        color: ColorConstants.button_color,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: provider.isLoading
+                            ? Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: CircularProgressIndicator(
+                                  color: ColorConstants.primary_white,
+                                ),
+                              )
+                            : Text(
+                                "Submit",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
-                            )
-                          : Text(
-                              "Submit",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
+                      ),
                     ),
                   ),
-                ),
-                // Padding(
-                //   padding: const EdgeInsets.all(10),
-                //   child: CustomButton(
-                //     text: "Submit",
-                //     onTap: () async {
-                //       context.read<RegisterController>().otp_submission(
-                //           otp_controller.text, email ?? "1", context);
-                //     },
-                //   ),
-                // )
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void showDialogWithFields() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          content: Container(
+            height: 100,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Success !",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  "Your account have been created successfully",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    // fontWeight: FontWeight.bold,
+                    // fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, "/bottomnavigation");
+                },
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: ColorConstants.button_color,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Okay",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

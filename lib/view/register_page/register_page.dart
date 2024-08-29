@@ -64,10 +64,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   CustomTextField(
                     controller: name_Controller,
+                    // minLines: 3,
                     hintText: "Name",
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Enter the name';
+                      }
+                      if (value.length < 3) {
+                        return 'Name must be at least 3 characters long';
                       }
 
                       RegExp regex = RegExp(r'^[a-zA-Z\s]+$');
@@ -79,14 +83,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   SizedBox(height: 10),
                   CustomTextField(
+                    // prefixText: "+91 ",
                     errorText:
                         context.watch<RegisterController>().mobile_validate,
                     keyboardType: TextInputType.number,
                     prefix: Text(
-                      "+91",
-                      style: TextStyle(fontSize: 15),
+                      "  🇦🇪 +971 ",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                     ),
-                    // prefixText: "91",
+
                     controller: phone_Controller,
                     maxLength: 10,
                     hintText: "Phone number",
@@ -98,7 +104,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (!regex.hasMatch(phone_Controller.text)) {
                         return "Enter a valid phone number";
                       }
-
                       return null;
                     },
                   ),
@@ -145,38 +150,41 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (!regSpecial.hasMatch(value)) {
                         return "Password must contain at least one special charater";
                       }
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return "Password must contain at least one number";
+                      }
                     },
                   ),
                   SizedBox(height: 10),
-                  CustomTextField(
-                    controller: repass_Controller,
-                    hintText: "Re-enter",
-                    isPassword: true,
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "re-enter password";
-                      }
-                      if (value.length < 8) {
-                        return "Password must be at least 8 characters long";
-                      }
-                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                        return "Password must contain at least one uppercase letter";
-                      }
+                  // CustomTextField(
+                  //   controller: repass_Controller,
+                  //   hintText: "Re-enter",
+                  //   isPassword: true,
+                  //   validator: (String? value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return "re-enter password";
+                  //     }
+                  //     if (value.length < 8) {
+                  //       return "Password must be at least 8 characters long";
+                  //     }
+                  //     if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                  //       return "Password must contain at least one uppercase letter";
+                  //     }
 
-                      if (!RegExp(r'[a-z]').hasMatch(value)) {
-                        return "Password must contain at least one lowercase letter";
-                      }
-                      final RegExp regSpecial = RegExp(r'[!@#\$&*~]');
-                      if (!regSpecial.hasMatch(value)) {
-                        return "Password must contain at least one special charater";
-                      }
-                      if (password_controller.text != value) {
-                        return 'Passwords do not match';
-                      }
-                    },
-                  ),
+                  //     if (!RegExp(r'[a-z]').hasMatch(value)) {
+                  //       return "Password must contain at least one lowercase letter";
+                  //     }
+                  //     final RegExp regSpecial = RegExp(r'[!@#\$&*~]');
+                  //     if (!regSpecial.hasMatch(value)) {
+                  //       return "Password must contain at least one special charater";
+                  //     }
+                  //     if (password_controller.text != value) {
+                  //       return 'Passwords do not match';
+                  //     }
+                  //   },
+                  // ),
                   SizedBox(
-                    height: 40,
+                    height: 50,
                   ),
                   InkWell(
                     onTap: () async {
@@ -188,6 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             password_controller.text,
                             context);
                       }
+                      // Navigator.pushNamed(context, "/verification");
                     },
                     child: Container(
                       height: 50,

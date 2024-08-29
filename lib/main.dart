@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/controller/register_controller.dart';
+import 'package:learning_app/core/widgets/pop_up_screen.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
 import 'package:learning_app/view/account_page/edit_profile/edit_profile.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
@@ -43,6 +45,9 @@ class _LearningAppState extends State<LearningApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => NotificationControlller(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => EditController(),
         )
       ],
       child: MaterialApp(

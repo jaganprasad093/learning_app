@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:learning_app/controller/notification_controlller.dart';
+import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/main.dart';
+import 'package:learning_app/view/register_page/widgets/pop_up_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +19,7 @@ class RegisterController with ChangeNotifier {
 
   String? email_validate;
   String? mobile_validate;
+  String? error_message;
 
   Uri domain = Uri.parse("http://learningapp.e8demo.com/api/");
   Future<void> registerData(
@@ -61,16 +64,25 @@ class RegisterController with ChangeNotifier {
         var name = jsonResponse["userdata"]["name"];
         var email = jsonResponse["userdata"]["email"];
         var mobile = jsonResponse["userdata"]["mobile"];
-        var gender = jsonResponse["userdata"]["gender"];
+        var gender = jsonResponse["userdata"]["gender"] ?? "";
         var userId = jsonResponse["userdata"]["id"];
         var otp = jsonResponse["code"];
+        var dob = jsonResponse["dob"] ?? "";
+        var address = jsonResponse["address"] ?? "null";
 
         // log("access_token---$access_token");
         // log("name---$name");
-        await saveUserData(
-            access_token, refresh_token, userId, email, mobile, gender, name);
+        await saveUserData(access_token, refresh_token, userId, email, mobile,
+            name, gender, dob, true, address);
         context.read<NotificationControlller>().showNotification(
             id: 1, title: "OTP", body: " Your one time OTP is ${otp} ");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 10),
+            backgroundColor: Colors.green,
+            content: Text("Your one time OTP is ${otp}"),
+          ),
+        );
         log("Response: ${response.body}");
         Navigator.pushNamed(context, "/verification");
         log("registed sucessfully");
@@ -86,14 +98,16 @@ class RegisterController with ChangeNotifier {
 // saving users data while loging
 
   Future<void> saveUserData(
-    String accessToken,
-    String refreshToken,
-    int userId,
-    String email,
-    String mobile,
-    var gender,
-    String name,
-  ) async {
+      String accessToken,
+      String refreshToken,
+      int userId,
+      String email,
+      String mobile,
+      String name,
+      var gender,
+      String dob,
+      bool islogged,
+      var address) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', accessToken);
     await prefs.setString('refresh_token', refreshToken);
@@ -101,6 +115,10 @@ class RegisterController with ChangeNotifier {
     await prefs.setString('email', email);
     await prefs.setString('mobile', mobile);
     await prefs.setString('name', name);
+    await prefs.setBool('islogged', islogged);
+    await prefs.setString('gender', gender);
+    await prefs.setString('dob', dob);
+    await prefs.setString('address', address);
 
     log('Saved access_token: $accessToken');
     log('Saved refresh_token: $refreshToken');
@@ -108,6 +126,7 @@ class RegisterController with ChangeNotifier {
     log('Saved email: $email');
     log('Saved mobile: $mobile');
     log('Saved name: $name');
+    log('Saved address: $address');
   }
 
 // login api
@@ -127,11 +146,12 @@ class RegisterController with ChangeNotifier {
       // headers: {"Content-Type": "application/json"},
       body: data,
     );
-
+    log(response.body);
     // log("Response: ${response.body}");
     if (response.statusCode == 200) {
-      log("Response: ${response.body}");
+      // log("Response: ${response.body}");
       var jsonResponse = jsonDecode(response.body);
+
       if (jsonResponse['result'] == "failure") {
         String errorMessage = jsonResponse['errors'].toString();
         errorMessage = errorMessage.replaceAll('{', '');
@@ -146,12 +166,29 @@ class RegisterController with ChangeNotifier {
 
         log("login failed: $errorMessage");
       } else {
+        var access_token = jsonResponse["token"]["access_token"];
+        var refresh_token = jsonResponse["token"]["refresh_token"];
+        var name = jsonResponse["name"];
+        var email = jsonResponse["email"];
+        var mobile = jsonResponse["mobile"];
+        var gender = jsonResponse["gender"] ?? "";
+        var userId = jsonResponse["id"];
+        var dob = jsonResponse["dob"] ?? "";
+        var address = jsonResponse["address"] ?? "null";
+        // var otp = jsonResponse["code"];
+        await saveUserData(access_token, refresh_token, userId, email, mobile,
+            name, gender, dob, true, address);
         Navigator.pushNamed(context, "/bottomnavigation");
         log("Response: ${response.body}");
       }
       log("login sucess");
     } else {
-      log("Error: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("email or password is incorrect"),
+        ),
+      );
     }
 
     isLoading = false;
@@ -163,6 +200,7 @@ class RegisterController with ChangeNotifier {
   otp_submission(
       final String otp, final String email, BuildContext context) async {
     isLoading = true;
+    error_message = null;
     var login = Uri.parse("user-login/");
     Uri url =
         Uri.parse("http://learningapp.e8demo.com/api/user-email-verification/");
@@ -183,15 +221,87 @@ class RegisterController with ChangeNotifier {
       log("result--${jsonResponse['result']}");
       if (jsonResponse['result'] == "success") {
         log("otp verification sucess ");
-        Navigator.pushNamed(context, "/bottomnavigation");
+        // await SuccessDialog(
+        //   onButtonPressed: () {
+        //     Navigator.pushNamed(context, "/bottomnavigation");
+        //   },
+        // );
+
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              content: Container(
+                height: 100,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Success !",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.green,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "Your account have been created successfully",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        // fontSize: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Center(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/bottomnavigation");
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: ColorConstants.button_color,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Okay",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Given otp is not matching"),
-        ),
-      );
+    }
+    if (jsonResponse['status'] == "failure") {
+      error_message = "Given otp is not matching";
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     backgroundColor: Colors.red,
+      //     content: Text("Given otp is not matching"),
+      //   ),
+      // );
       log("Error: ${response.statusCode}");
     }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,8 +12,14 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3)).then((value) {
-      Navigator.pushNamed(context, "/login");
+    Future.delayed(Duration(seconds: 3)).then((value) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool isLoggedIn = prefs.getBool('islogged') ?? false;
+      if (isLoggedIn) {
+        Navigator.pushNamed(context, "/bottomnavigation");
+      } else {
+        Navigator.pushNamed(context, "/login");
+      }
     });
     super.initState();
   }

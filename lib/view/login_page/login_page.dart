@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:learning_app/controller/register_controller.dart';
@@ -21,6 +22,15 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
   bool invisible = true;
   final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    if (kDebugMode) {
+      emailController.text = 'jaan@gmail.com';
+      passwordController.text = 'Jaan@2002';
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  var name = "";
+  var email = "";
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    name = prefs.getString("name") ?? "";
+    email = prefs.getString("email") ?? "";
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +70,10 @@ class AccountPage extends StatelessWidget {
             SizedBox(height: 10),
 
             Text(
-              "Name",
+              name,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Text("e-mail"),
+            Text(email),
             SizedBox(height: 40),
 
             Column(
@@ -159,7 +180,7 @@ class AccountPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () async {
-                    Navigator.pushReplacementNamed(context, "/login");
+                    showDialogWithFields();
                   },
                   child: Container(
                     child: Text(
@@ -177,6 +198,81 @@ class AccountPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void showDialogWithFields() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          content: Container(
+            height: 100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Are you sure you want logout",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Center(
+                        child: Text(
+                          "cancel",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.clear();
+                        Navigator.pushReplacementNamed(context, "/login");
+                      },
+                      child: Center(
+                        child: Text(
+                          "Logout",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
