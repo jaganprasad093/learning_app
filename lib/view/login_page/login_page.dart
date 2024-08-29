@@ -81,9 +81,10 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         context.read<RegisterController>().loginData(
-                            emailController.text, passwordController.text);
+                            emailController.text,
+                            passwordController.text,
+                            context);
                       }
-                      // Navigator.pushNamed(context, "/bottomnavigation");
                     },
                     child: Container(
                       height: 50,
@@ -107,7 +108,11 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 40,
                   ),
-                  Text("Forgot password?"),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "otp");
+                      },
+                      child: Text("Forgot password?")),
                   SizedBox(
                     height: 10,
                   ),

@@ -12,8 +12,9 @@ import 'package:learning_app/view/homepage/see_all_page.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
 import 'package:learning_app/view/login_page/login_page.dart';
 import 'package:learning_app/view/my_learning/my_learning.dart';
-import 'package:learning_app/view/checkout_page/otp_submission/otp_submission.dart';
+import 'package:learning_app/view/login_page/otp_submission/otp_submission.dart';
 import 'package:learning_app/view/register_page/register_page.dart';
+import 'package:learning_app/view/register_page/widgets/otp_verification.dart';
 import 'package:learning_app/view/search_screen/search_screen.dart';
 import 'package:learning_app/view/slpash_screen/splash_screen.dart';
 import 'package:learning_app/view/wishlist_page/wishlist_page.dart';
@@ -39,6 +40,9 @@ class _LearningAppState extends State<LearningApp> {
       providers: [
         ChangeNotifierProvider(
           create: (context) => RegisterController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => NotificationControlller(),
         )
       ],
       child: MaterialApp(
@@ -63,6 +67,7 @@ class _LearningAppState extends State<LearningApp> {
           '/checkout': (context) => const CheckoutPage(),
           '/otp': (context) => OtpSubmission(),
           '/confrim': (context) => ConfrimAnimated(),
+          '/verification': (context) => Verification(),
         },
       ),
     );
