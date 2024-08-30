@@ -69,11 +69,13 @@ class RegisterController with ChangeNotifier {
         var otp = jsonResponse["code"];
         var dob = jsonResponse["dob"] ?? "";
         var address = jsonResponse["address"] ?? "null";
+        var profile_pic = jsonResponse["profile_pic"];
+        log("pro pic---$profile_pic");
 
         // log("access_token---$access_token");
         // log("name---$name");
         await saveUserData(access_token, refresh_token, userId, email, mobile,
-            name, gender, dob, true, address);
+            name, gender, dob, true, address, profile_pic);
         context.read<NotificationControlller>().showNotification(
             id: 1, title: "OTP", body: " Your one time OTP is ${otp} ");
         ScaffoldMessenger.of(context).showSnackBar(
@@ -107,7 +109,8 @@ class RegisterController with ChangeNotifier {
       var gender,
       String dob,
       bool islogged,
-      var address) async {
+      String address,
+      String? profile_pic) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', accessToken);
     await prefs.setString('refresh_token', refreshToken);
@@ -119,6 +122,7 @@ class RegisterController with ChangeNotifier {
     await prefs.setString('gender', gender);
     await prefs.setString('dob', dob);
     await prefs.setString('address', address);
+    await prefs.setString('profile_pic', profile_pic ?? "");
 
     log('Saved access_token: $accessToken');
     log('Saved refresh_token: $refreshToken');
@@ -127,6 +131,7 @@ class RegisterController with ChangeNotifier {
     log('Saved mobile: $mobile');
     log('Saved name: $name');
     log('Saved address: $address');
+    log('profile pic: $profile_pic');
   }
 
 // login api
@@ -175,10 +180,77 @@ class RegisterController with ChangeNotifier {
         var userId = jsonResponse["id"];
         var dob = jsonResponse["dob"] ?? "";
         var address = jsonResponse["address"] ?? "null";
+        var profile_pic = jsonResponse["profile_pic"];
         // var otp = jsonResponse["code"];
         await saveUserData(access_token, refresh_token, userId, email, mobile,
-            name, gender, dob, true, address);
-        Navigator.pushNamed(context, "/bottomnavigation");
+            name, gender, dob, true, address, profile_pic);
+        // Navigator.pushNamed(context, "/bottomnavigation");
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              content: Container(
+                height: 100,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Success !",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.green,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "You logged successfully",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        // fontSize: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Center(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/bottomnavigation");
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: ColorConstants.button_color,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Okay",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+
         log("Response: ${response.body}");
       }
       log("login sucess");

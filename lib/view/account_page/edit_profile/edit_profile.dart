@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
@@ -8,6 +10,7 @@ import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -23,6 +26,9 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController address_Controller = TextEditingController();
   TextEditingController date_Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey _menuKey = GlobalKey();
+  var profile_pic;
+  File? _imageFile;
 
   @override
   void initState() {
@@ -40,6 +46,8 @@ class _EditProfileState extends State<EditProfile> {
     selectedGender = prefs.getString("gender");
     address_Controller.text = prefs.getString("address") ?? "";
 
+    profile_pic = prefs.getString("profile_pic");
+    log("adress--${prefs.getString("address")}");
     // Initialize the date controller with the formatted date
     String? dateString = prefs.getString("dob");
     if (dateString != null && dateString.isNotEmpty) {
@@ -53,7 +61,7 @@ class _EditProfileState extends State<EditProfile> {
         print("Date parsing error: $e");
       }
     }
-
+    log("pick image--$_imageFile");
     // Notify the UI to update with the new values
     setState(() {});
   }
@@ -63,6 +71,39 @@ class _EditProfileState extends State<EditProfile> {
     "Female",
   ];
   String? selectedGender;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+        profile_pic = pickedFile.path;
+        // Save the selected image path in SharedPreferences
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString('profile_pic', profile_pic);
+        });
+      });
+    }
+  }
+
+  Future<void> _captureImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+        profile_pic = pickedFile.path;
+        // Save the captured image path in SharedPreferences
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString('profile_pic', profile_pic);
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var provider = context.read<EditController>();
@@ -90,10 +131,39 @@ class _EditProfileState extends State<EditProfile> {
                     height: 10,
                   ),
                   Center(
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundImage: AssetImage(ImageConstants.splashscreen),
-                    ),
+                    child: Stack(children: [
+                      CircleAvatar(
+                        backgroundImage: profile_pic == null
+                            ? AssetImage(ImageConstants.splashscreen)
+                            : _imageFile == null
+                                ? NetworkImage(profile_pic)
+                                : FileImage(File(_imageFile!.path)),
+                        radius: 60,
+                        // backgroundColor: Colors.grey.withOpacity(0.6),
+                      ),
+                      Positioned(
+                          bottom: 1,
+                          right: 1,
+                          child: InkWell(
+                            onTapDown: (details) {
+                              showbuttonMenu(context, details.globalPosition);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: ColorConstants.primary_black
+                                      .withOpacity(.5),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Icon(
+                                  Icons.edit,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )),
+                    ]),
                   ),
                   SizedBox(
                     height: 20,
@@ -172,7 +242,7 @@ class _EditProfileState extends State<EditProfile> {
                         fontSize: 16),
                   ),
                   SizedBox(height: 10),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -182,7 +252,10 @@ class _EditProfileState extends State<EditProfile> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    value: selectedGender,
+                    value: selectedGender != null &&
+                            gender.contains(selectedGender)
+                        ? selectedGender
+                        : null,
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedGender = newValue;
@@ -243,14 +316,27 @@ class _EditProfileState extends State<EditProfile> {
                           String formattedDate =
                               DateFormat('yyyy-MM-dd').format(parsedDate);
 
-                          provider.editprofileData(
-                              name_Controller.text,
-                              phone_controller.text,
-                              email_Controller.text,
-                              selectedGender,
-                              formattedDate,
-                              address_Controller.text,
-                              context);
+                          provider.editProfileData(
+                              name: name_Controller.text,
+                              phone: phone_controller.text,
+                              email: email_Controller.text,
+                              gender: selectedGender ?? "",
+                              dob: formattedDate,
+                              address: address_Controller.text,
+                              context: context,
+                              profilePic: _imageFile);
+
+                          // context.read<EditController>().editProfileData(
+                          //     name: 'John Doe',
+                          //     phone: '1234567890',
+                          //     email: 'john.doe@example.com',
+                          //     gender: 'Male',
+                          //     dob: '1990-01-01',
+                          //     address: '123 Main St',
+                          //     context: context,
+                          //     // profilePic:
+                          //     profilePic: _imageFile);
+
                           // Navigator.pop(context);
                           // log("edit success");
                         } catch (e) {
@@ -290,6 +376,44 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
     );
+  }
+
+  void showbuttonMenu(BuildContext context, Offset offset) {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final double menuWidth = 200;
+    final double menuHeight = 100; // Set a height for the menu (optional)
+
+    final double rightPosition = MediaQuery.of(context).size.width - 40;
+    final double topPosition = offset.dy;
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        rightPosition, // X position from the left
+        topPosition, // Y position from the top
+        MediaQuery.of(context).size.width - rightPosition, // Right side
+        MediaQuery.of(context).size.height - topPosition, // Bottom side
+      ),
+      items: [
+        PopupMenuItem(
+          child: Text("Camera"),
+          value: 'camera',
+        ),
+        PopupMenuItem(
+          child: Text(
+            "Gallery",
+          ),
+          value: 'files',
+        ),
+      ],
+    ).then((value) {
+      if (value == 'camera') {
+        _pickImage();
+      } else if (value == 'files') {
+        _captureImage();
+      }
+    });
   }
 
   DateTime selectedDate = DateTime.now();

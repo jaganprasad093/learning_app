@@ -8,6 +8,7 @@ import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:learning_app/main.dart';
+import 'package:learning_app/view/login_page/forgot_password/forgot_password.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,8 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     if (kDebugMode) {
-      emailController.text = 'jaan@gmail.com';
-      passwordController.text = 'Jaan@2002';
+      emailController.text = 'jaan1@gmail.com';
+      passwordController.text = 'Jaan@2255';
     }
     super.initState();
   }
@@ -76,12 +77,25 @@ class _LoginPageState extends State<LoginPage> {
                     isPassword: true,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the password';
+                        return 'Please enter password';
                       }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                      if (value.length < 8) {
+                        return "Password must be at least 8 characters long";
                       }
-                      return null;
+                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                        return "Password must contain at least one uppercase letter";
+                      }
+
+                      if (!RegExp(r'[a-z]').hasMatch(value)) {
+                        return "Password must contain at least one lowercase letter";
+                      }
+                      final RegExp regSpecial = RegExp(r'[!@#\$&*~]');
+                      if (!regSpecial.hasMatch(value)) {
+                        return "Password must contain at least one special charater";
+                      }
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return "Password must contain at least one number";
+                      }
                     },
                   ),
                   SizedBox(
@@ -120,7 +134,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, "otp");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ForgotPassword(),
+                            ));
                       },
                       child: Text("Forgot password?")),
                   SizedBox(

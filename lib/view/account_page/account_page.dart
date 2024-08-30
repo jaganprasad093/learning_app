@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPage extends StatefulWidget {
@@ -12,6 +15,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   var name = "";
   var email = "";
+  var profile_pic = "";
   @override
   void initState() {
     init();
@@ -22,6 +26,8 @@ class _AccountPageState extends State<AccountPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = prefs.getString("name") ?? "";
     email = prefs.getString("email") ?? "";
+    profile_pic = prefs.getString("profile_pic") ?? "";
+    log("profile pic---$profile_pic");
     setState(() {});
   }
 
@@ -48,23 +54,14 @@ class _AccountPageState extends State<AccountPage> {
             Center(
               child: Stack(children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    "https://images.pexels.com/photos/34534/people-peoples-homeless-male.jpg?auto=compress&cs=tinysrgb&w=600",
-                  ),
+                  backgroundImage: profile_pic.isEmpty
+                      ? AssetImage(ImageConstants.splashscreen)
+                      : NetworkImage(
+                          profile_pic,
+                        ),
                   radius: 60,
                   // backgroundColor: Colors.grey.withOpacity(0.6),
                 ),
-                Positioned(
-                    bottom: 1,
-                    right: 1,
-                    child: InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.camera_alt_outlined,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    )),
               ]),
             ),
             SizedBox(height: 10),
@@ -215,7 +212,7 @@ class _AccountPageState extends State<AccountPage> {
                   height: 20,
                 ),
                 Text(
-                  "Are you sure you want logout",
+                  "Are you sure you want logout?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -239,7 +236,7 @@ class _AccountPageState extends State<AccountPage> {
                       },
                       child: Center(
                         child: Text(
-                          "cancel",
+                          "Cancel",
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
