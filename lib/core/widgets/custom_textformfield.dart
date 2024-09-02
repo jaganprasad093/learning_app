@@ -47,6 +47,7 @@ class CustomTextField extends StatelessWidget {
     return StatefulBuilder(
       builder: (context, setState) {
         return TextFormField(
+          onTapOutside: (event) => FocusScope.of(context).unfocus(),
           maxLines: isPassword ? 1 : maxLines,
           enabled: enabled,
           readOnly: readOnly ?? false,

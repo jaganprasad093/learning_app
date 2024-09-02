@@ -15,7 +15,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   var name = "";
   var email = "";
-  var profile_pic = "";
+  var profile_pic;
   @override
   void initState() {
     init();
@@ -26,7 +26,7 @@ class _AccountPageState extends State<AccountPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = prefs.getString("name") ?? "";
     email = prefs.getString("email") ?? "";
-    profile_pic = prefs.getString("profile_pic") ?? "";
+    profile_pic = prefs.getString("profile_pic") ?? "fdgg";
     log("profile pic---$profile_pic");
     setState(() {});
   }
@@ -54,8 +54,9 @@ class _AccountPageState extends State<AccountPage> {
             Center(
               child: Stack(children: [
                 CircleAvatar(
-                  backgroundImage: profile_pic.isEmpty
-                      ? AssetImage(ImageConstants.splashscreen)
+                  backgroundImage: profile_pic == null
+                      ? NetworkImage(
+                          "https://i0.wp.com/florrycreativecare.com/wp-content/uploads/2020/08/blank-profile-picture-mystery-man-avatar-973460.jpg?ssl=1")
                       : NetworkImage(
                           profile_pic,
                         ),
@@ -80,6 +81,7 @@ class _AccountPageState extends State<AccountPage> {
                     Navigator.pushNamed(context, "/editprofile");
                   },
                   child: Container(
+                    height: 50,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -93,12 +95,29 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/changepsd");
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Change password",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
+                  ),
                 ),
                 InkWell(
                   onTap: () {},
                   child: Container(
+                    height: 50,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -112,10 +131,8 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 Container(
+                  height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -132,10 +149,8 @@ class _AccountPageState extends State<AccountPage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 Container(
+                  height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -152,10 +167,8 @@ class _AccountPageState extends State<AccountPage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 Container(
+                  height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -173,7 +186,7 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 80,
+                  height: 30,
                 ),
                 InkWell(
                   onTap: () async {

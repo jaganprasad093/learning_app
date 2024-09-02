@@ -96,7 +96,7 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _imageFile = File(pickedFile.path);
         profile_pic = pickedFile.path;
-        // Save the captured image path in SharedPreferences
+
         SharedPreferences.getInstance().then((prefs) {
           prefs.setString('profile_pic', profile_pic);
         });
@@ -114,263 +114,266 @@ class _EditProfileState extends State<EditProfile> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 10,
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Stack(children: [
+                    CircleAvatar(
+                      backgroundImage: profile_pic == null ||
+                              profile_pic.isEmpty
+                          ? NetworkImage(
+                              "https://i0.wp.com/florrycreativecare.com/wp-content/uploads/2020/08/blank-profile-picture-mystery-man-avatar-973460.jpg?ssl=1")
+                          : _imageFile == null
+                              ? NetworkImage(profile_pic)
+                              : FileImage(File(_imageFile!.path)),
+                      radius: 60,
+                      // backgroundColor: Colors.grey.withOpacity(0.6),
+                    ),
+                    Positioned(
+                        bottom: 5,
+                        right: 1,
+                        child: InkWell(
+                          onTapDown: (details) {
+                            showbuttonMenu(context, details.globalPosition);
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  ColorConstants.primary_black.withOpacity(.5),
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )),
+                  ]),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Basic Information",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: ColorConstants.primary_black.withOpacity(.5),
+                      fontSize: 16),
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  enabled: false,
+                  controller: email_Controller,
+                  hintText: "Email address",
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the email address';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return "Enter a valid email address";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  controller: name_Controller,
+                  hintText: "Name",
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter the name';
+                    }
+
+                    RegExp regex = RegExp(r'^[a-zA-Z\s]+$');
+
+                    if (!regex.hasMatch(value)) {
+                      return "Please enter a valid name ";
+                    }
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  // prefixText: "+91 ",
+                  // errorText:
+                  //     context.watch<RegisterController>().mobile_validate,
+                  keyboardType: TextInputType.number,
+                  prefix: Text(
+                    "  +91 ",
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                   ),
-                  Center(
-                    child: Stack(children: [
-                      CircleAvatar(
-                        backgroundImage: profile_pic == null
-                            ? AssetImage(ImageConstants.splashscreen)
-                            : _imageFile == null
-                                ? NetworkImage(profile_pic)
-                                : FileImage(File(_imageFile!.path)),
-                        radius: 60,
-                        // backgroundColor: Colors.grey.withOpacity(0.6),
-                      ),
-                      Positioned(
-                          bottom: 1,
-                          right: 1,
-                          child: InkWell(
-                            onTapDown: (details) {
-                              showbuttonMenu(context, details.globalPosition);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: ColorConstants.primary_black
-                                      .withOpacity(.5),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(3),
-                                child: Icon(
-                                  Icons.edit,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
+
+                  controller: phone_controller,
+                  maxLength: 10,
+                  hintText: "Phone number",
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter the phone number';
+                    }
+                    RegExp regex = RegExp(r'^\+?[0-9]{10,15}$');
+                    if (!regex.hasMatch(phone_controller.text)) {
+                      return "Enter a valid phone number";
+                    }
+
+                    return null;
+                  },
+                ),
+                SizedBox(height: 30),
+                Text(
+                  "Personal Information",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: ColorConstants.primary_black.withOpacity(.5),
+                      fontSize: 16),
+                ),
+                SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    focusedBorder: OutlineInputBorder(),
+                    hintText: "Select gender",
+                    hintStyle: TextStyle(
+                      textBaseline: TextBaseline.alphabetic,
+                      height: 2,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  value:
+                      selectedGender != null && gender.contains(selectedGender)
+                          ? selectedGender
+                          : null,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedGender = newValue;
+                    });
+                  },
+                  items: gender.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  validator: (String? value) {
+                    return (value == null || value.isEmpty)
+                        ? 'Please select gender'
+                        : null;
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  readOnly: true,
+                  suffixIcon: Icon(Icons.calendar_month_rounded),
+                  onTap: () => selectDate(context, date_Controller),
+                  controller: date_Controller,
+                  hintText: "Date of birth",
+                  validator: (String? value) {
+                    return (value == null || value.isEmpty)
+                        ? 'Please enter a date'
+                        : null;
+                  },
+                ),
+                SizedBox(height: 10),
+                Container(
+                  height: 100,
+                  child: CustomTextField(
+                    // contentPadding:
+                    //     EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                    controller: address_Controller,
+                    hintText: "Address",
+                    minLines: 5,
+                    maxLines: 10,
+                    validator: (String? value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please enter a address'
+                          : null;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                InkWell(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      try {
+                        DateTime parsedDate = DateFormat('dd-MM-yyyy')
+                            .parse(date_Controller.text);
+
+                        String formattedDate =
+                            DateFormat('yyyy-MM-dd').format(parsedDate);
+
+                        provider.editProfileData(
+                            name: name_Controller.text,
+                            phone: phone_controller.text,
+                            email: email_Controller.text,
+                            gender: selectedGender ?? "",
+                            dob: formattedDate,
+                            address: address_Controller.text,
+                            context: context,
+                            profilePic: _imageFile);
+
+                        // context.read<EditController>().editProfileData(
+                        //     name: 'John Doe',
+                        //     phone: '1234567890',
+                        //     email: 'john.doe@example.com',
+                        //     gender: 'Male',
+                        //     dob: '1990-01-01',
+                        //     address: '123 Main St',
+                        //     context: context,
+                        //     // profilePic:
+                        //     profilePic: _imageFile);
+
+                        // Navigator.pop(context);
+                        // log("edit success");
+                      } catch (e) {
+                        print("Invalid date format: $e");
+                      }
+                    }
+                  },
+                  child: Container(
+                    height: 50,
+                    // width: 200,
+                    decoration: BoxDecoration(
+                      color: ColorConstants.button_color,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: provider.isLoading
+                          ? CircularProgressIndicator(
+                              color: ColorConstants.primary_white,
+                            )
+                          : Text(
+                              "Update profile",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
                               ),
                             ),
-                          )),
-                    ]),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Basic Information",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: ColorConstants.primary_black.withOpacity(.5),
-                        fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  CustomTextField(
-                    enabled: false,
-                    controller: email_Controller,
-                    hintText: "Email address",
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the email address';
-                      }
-                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return "Enter a valid email address";
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  CustomTextField(
-                    controller: name_Controller,
-                    hintText: "Name",
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter the name';
-                      }
-
-                      RegExp regex = RegExp(r'^[a-zA-Z\s]+$');
-
-                      if (!regex.hasMatch(value)) {
-                        return "Please enter a valid name ";
-                      }
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  CustomTextField(
-                    // prefixText: "+91 ",
-                    // errorText:
-                    //     context.watch<RegisterController>().mobile_validate,
-                    keyboardType: TextInputType.number,
-                    prefix: Text(
-                      "  +91 ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-                    ),
-
-                    controller: phone_controller,
-                    maxLength: 10,
-                    hintText: "Phone number",
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter the phone number';
-                      }
-                      RegExp regex = RegExp(r'^\+?[0-9]{10,15}$');
-                      if (!regex.hasMatch(phone_controller.text)) {
-                        return "Enter a valid phone number";
-                      }
-
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    "Personal Information",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: ColorConstants.primary_black.withOpacity(.5),
-                        fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      focusedBorder: OutlineInputBorder(),
-                      hintText: "Select gender",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    value: selectedGender != null &&
-                            gender.contains(selectedGender)
-                        ? selectedGender
-                        : null,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedGender = newValue;
-                      });
-                    },
-                    items: gender.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    validator: (String? value) {
-                      return (value == null || value.isEmpty)
-                          ? 'Please select gender'
-                          : null;
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  CustomTextField(
-                    readOnly: true,
-                    suffixIcon: Icon(Icons.calendar_month_rounded),
-                    onTap: () => selectDate(context, date_Controller),
-                    controller: date_Controller,
-                    hintText: "Date of birth",
-                    validator: (String? value) {
-                      return (value == null || value.isEmpty)
-                          ? 'Please enter a date'
-                          : null;
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    height: 100,
-                    child: CustomTextField(
-                      // contentPadding:
-                      //     EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-                      controller: address_Controller,
-                      hintText: "Address",
-                      minLines: 5,
-                      maxLines: 10,
-                      validator: (String? value) {
-                        return (value == null || value.isEmpty)
-                            ? 'Please enter a address'
-                            : null;
-                      },
                     ),
                   ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          DateTime parsedDate = DateFormat('dd-MM-yyyy')
-                              .parse(date_Controller.text);
-
-                          String formattedDate =
-                              DateFormat('yyyy-MM-dd').format(parsedDate);
-
-                          provider.editProfileData(
-                              name: name_Controller.text,
-                              phone: phone_controller.text,
-                              email: email_Controller.text,
-                              gender: selectedGender ?? "",
-                              dob: formattedDate,
-                              address: address_Controller.text,
-                              context: context,
-                              profilePic: _imageFile);
-
-                          // context.read<EditController>().editProfileData(
-                          //     name: 'John Doe',
-                          //     phone: '1234567890',
-                          //     email: 'john.doe@example.com',
-                          //     gender: 'Male',
-                          //     dob: '1990-01-01',
-                          //     address: '123 Main St',
-                          //     context: context,
-                          //     // profilePic:
-                          //     profilePic: _imageFile);
-
-                          // Navigator.pop(context);
-                          // log("edit success");
-                        } catch (e) {
-                          print("Invalid date format: $e");
-                        }
-                      }
-                    },
-                    child: Container(
-                      height: 50,
-                      // width: 200,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.button_color,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Edit profile",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  )
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 30,
+                )
+              ],
             ),
           ),
         ),
@@ -390,48 +393,72 @@ class _EditProfileState extends State<EditProfile> {
     showMenu(
       context: context,
       position: RelativeRect.fromLTRB(
-        rightPosition, // X position from the left
-        topPosition, // Y position from the top
+        rightPosition,
+        topPosition,
         MediaQuery.of(context).size.width - rightPosition, // Right side
         MediaQuery.of(context).size.height - topPosition, // Bottom side
       ),
       items: [
         PopupMenuItem(
-          child: Text("Camera"),
-          value: 'camera',
+          child: Text("Gallery"),
+          value: 'gallery',
         ),
         PopupMenuItem(
           child: Text(
-            "Gallery",
+            "Camera",
           ),
-          value: 'files',
+          value: 'camera',
         ),
       ],
     ).then((value) {
-      if (value == 'camera') {
+      if (value == 'gallery') {
         _pickImage();
-      } else if (value == 'files') {
+      } else if (value == 'camera') {
         _captureImage();
       }
     });
   }
 
-  DateTime selectedDate = DateTime.now();
-  Future selectDate(
-      BuildContext context, TextEditingController controller) async {
+  DateTime selectedDate = DateTime(2015, 12, 31);
+  Future<void> selectDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2024, 1),
-      lastDate: DateTime(2100),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2015, 12, 31),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blue,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        String convertedDateTime =
+        String formattedDate =
             "${picked.day.toString().padLeft(2, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.year.toString()}";
-        controller.value = TextEditingValue(text: convertedDateTime);
+        controller.value = TextEditingValue(text: formattedDate);
       });
+    } else if (selectedDate == null) {
+      String formattedDate =
+          "${DateTime.now().day.toString().padLeft(2, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().year.toString()}";
+      controller.value = TextEditingValue(text: formattedDate);
     }
   }
 }

@@ -1,133 +1,97 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
+import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_button.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
-
-  @override
-  State<ForgotPassword> createState() => _ForgotPasswordState();
-}
-
-class _ForgotPasswordState extends State<ForgotPassword> {
-  TextEditingController old_controller = TextEditingController();
-  TextEditingController new_controller = TextEditingController();
-  TextEditingController reenter_controller = TextEditingController();
+class ForgotPassword extends StatelessWidget {
+  TextEditingController email_controller = TextEditingController();
+  bool invisible = true;
   final _formKey = GlobalKey<FormState>();
+  ForgotPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var provider = context.watch<ForgotPasswordController>();
+    String? email_validate;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Forgot password",
+          "Forget password",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(
+                  height: 150,
+                ),
+                CircleAvatar(
+                  radius: 70,
+                  backgroundImage: AssetImage(ImageConstants.splashscreen),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
                 CustomTextField(
-                  controller: old_controller,
-                  hintText: "Old-Password",
-                  isPassword: true,
+                  errorText: provider.email_validate,
+                  controller: email_controller,
+                  hintText: "Email address",
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter password';
+                      return 'Please enter the email address';
                     }
-                    if (value.length < 8) {
-                      return "Password must be at least 8 characters long";
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return "Enter a valid email address";
                     }
-                    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                      return "Password must contain at least one uppercase letter";
+                    if (email_validate != null) {
+                      return "User with email already exists.";
                     }
 
-                    if (!RegExp(r'[a-z]').hasMatch(value)) {
-                      return "Password must contain at least one lowercase letter";
-                    }
-                    final RegExp regSpecial = RegExp(r'[!@#\$&*~]');
-                    if (!regSpecial.hasMatch(value)) {
-                      return "Password must contain at least one special charater";
-                    }
-                    if (!RegExp(r'[0-9]').hasMatch(value)) {
-                      return "Password must contain at least one number";
-                    }
+                    return null;
                   },
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
-                CustomTextField(
-                  controller: new_controller,
-                  hintText: " New Password",
-                  isPassword: true,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter password';
-                    }
-                    if (value.length < 8) {
-                      return "Password must be at least 8 characters long";
-                    }
-                    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                      return "Password must contain at least one uppercase letter";
-                    }
-
-                    if (!RegExp(r'[a-z]').hasMatch(value)) {
-                      return "Password must contain at least one lowercase letter";
-                    }
-                    final RegExp regSpecial = RegExp(r'[!@#\$&*~]');
-                    if (!regSpecial.hasMatch(value)) {
-                      return "Password must contain at least one special charater";
-                    }
-                    if (!RegExp(r'[0-9]').hasMatch(value)) {
-                      return "Password must contain at least one number";
+                InkWell(
+                  onTap: () async {
+                    if (_formKey.currentState!.validate()) {
+                      provider.otpSend(context, email_controller.text);
                     }
                   },
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CustomTextField(
-                  controller: reenter_controller,
-                  hintText: "Re-Password",
-                  isPassword: true,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter password';
-                    }
-                    if (value.length < 8) {
-                      return "Password must be at least 8 characters long";
-                    }
-                    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                      return "Password must contain at least one uppercase letter";
-                    }
-
-                    if (!RegExp(r'[a-z]').hasMatch(value)) {
-                      return "Password must contain at least one lowercase letter";
-                    }
-                    final RegExp regSpecial = RegExp(r'[!@#\$&*~]');
-                    if (!regSpecial.hasMatch(value)) {
-                      return "Password must contain at least one special charater";
-                    }
-                    if (!RegExp(r'[0-9]').hasMatch(value)) {
-                      return "Password must contain at least one number";
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 80,
-                ),
-                CustomButton(text: "Submit")
+                  child: Container(
+                    height: 50,
+                    // width: 200,
+                    decoration: BoxDecoration(
+                      color: ColorConstants.button_color,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: provider.isLoading
+                          ? CircularProgressIndicator(
+                              color: ColorConstants.primary_white,
+                            )
+                          : Text(
+                              "Submit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

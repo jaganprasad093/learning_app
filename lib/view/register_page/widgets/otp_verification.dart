@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:learning_app/controller/register_controller.dart';
+import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/widgets/pop_up_screen.dart';
 import 'package:pinput/pinput.dart';

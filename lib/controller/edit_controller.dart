@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:learning_app/controller/register_controller.dart';
+import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,6 +65,13 @@ class EditController with ChangeNotifier {
 //       log('Failed to update data: ${response.statusCode}');
 //     }
 //   }
+  bool _isloading = false;
+  bool get isLoading => _isloading;
+  set isLoading(bool value) {
+    _isloading = value;
+    notifyListeners();
+  }
+
   Future<void> editProfileData({
     required String name,
     required String phone,
@@ -75,6 +82,7 @@ class EditController with ChangeNotifier {
     required BuildContext context,
     required File? profilePic,
   }) async {
+    isLoading = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final url = 'http://learningapp.e8demo.com/api/user-edit/';
     final accessToken = prefs.getString("access_token") ?? "";
@@ -131,6 +139,12 @@ class EditController with ChangeNotifier {
             builder: (context) => BottomNavigation(initialIndex: 4),
           ),
         );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text("Profile Updated Successfully"),
+          ),
+        );
         log('Data updated successfully: ${responseData.body}');
       }
     } else {
@@ -140,5 +154,6 @@ class EditController with ChangeNotifier {
       // );
       log('Failed to update data: ${response.statusCode}');
     }
+    isLoading = false;
   }
 }

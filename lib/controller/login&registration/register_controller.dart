@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
-import 'package:learning_app/main.dart';
-import 'package:learning_app/view/register_page/widgets/pop_up_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,10 +65,10 @@ class RegisterController with ChangeNotifier {
         var gender = jsonResponse["userdata"]["gender"] ?? "";
         var userId = jsonResponse["userdata"]["id"];
         var otp = jsonResponse["code"];
-        var dob = jsonResponse["dob"] ?? "";
-        var address = jsonResponse["address"] ?? "null";
-        var profile_pic = jsonResponse["profile_pic"];
-        log("pro pic---$profile_pic");
+        var dob = jsonResponse["userdata"]["dob"] ?? "";
+        var address = jsonResponse["userdata"]["address"] ?? "";
+        var profile_pic = jsonResponse["userdata"]["profile_pic"];
+        log("pro pic on registration---$profile_pic");
 
         // log("access_token---$access_token");
         // log("name---$name");
@@ -110,7 +108,7 @@ class RegisterController with ChangeNotifier {
       String dob,
       bool islogged,
       String address,
-      String? profile_pic) async {
+      String profile_pic) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', accessToken);
     await prefs.setString('refresh_token', refreshToken);
@@ -122,7 +120,7 @@ class RegisterController with ChangeNotifier {
     await prefs.setString('gender', gender);
     await prefs.setString('dob', dob);
     await prefs.setString('address', address);
-    await prefs.setString('profile_pic', profile_pic ?? "");
+    await prefs.setString('profile_pic', profile_pic);
 
     log('Saved access_token: $accessToken');
     log('Saved refresh_token: $refreshToken');
