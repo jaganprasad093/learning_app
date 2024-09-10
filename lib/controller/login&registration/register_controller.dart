@@ -18,6 +18,10 @@ class RegisterController with ChangeNotifier {
   String? email_validate;
   String? mobile_validate;
   String? error_message;
+  String? loginErrorMsg;
+  reset() {
+    loginErrorMsg = null;
+  }
 
   Uri domain = Uri.parse("http://learningapp.e8demo.com/api/");
   Future<void> registerData(
@@ -47,6 +51,7 @@ class RegisterController with ChangeNotifier {
       body: body,
     );
     log("body---$body");
+
     var jsonResponse = jsonDecode(response.body);
     log("Response: ${response.body}");
     if (response.statusCode == 200) {
@@ -160,12 +165,13 @@ class RegisterController with ChangeNotifier {
         errorMessage = errorMessage.replaceAll('{', '');
         errorMessage = errorMessage.replaceAll('}', '');
         errorMessage = errorMessage.replaceAll('email:', '');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text("$errorMessage"),
-          ),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     backgroundColor: Colors.red,
+        //     content: Text("$errorMessage"),
+        //   ),
+        // );
+        loginErrorMsg = errorMessage;
 
         log("login failed: $errorMessage");
       } else {
@@ -183,71 +189,8 @@ class RegisterController with ChangeNotifier {
         await saveUserData(access_token, refresh_token, userId, email, mobile,
             name, gender, dob, true, address, profile_pic);
         // Navigator.pushNamed(context, "/bottomnavigation");
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) {
-            return AlertDialog(
-              content: Container(
-                height: 100,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Success !",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.green,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      "You logged successfully",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        // fontWeight: FontWeight.bold,
-                        // fontSize: 20,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/bottomnavigation");
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.button_color,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Okay",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+        Navigator.pushNamed(context, "/bottomnavigation");
+        showSuccessDialog(context);
 
         log("Response: ${response.body}");
       }
@@ -271,13 +214,13 @@ class RegisterController with ChangeNotifier {
       final String otp, final String email, BuildContext context) async {
     isLoading = true;
     error_message = null;
-    var login = Uri.parse("user-login/");
+    // var login = Uri.parse("user-login/");
     Uri url =
         Uri.parse("http://learningapp.e8demo.com/api/user-email-verification/");
     // log("$url");
     Map data = {"email": email, "otp": otp};
 
-    String body = jsonEncode(data);
+    // String body = jsonEncode(data);
 
     // log("body--$body");
     var response = await http.post(
@@ -293,75 +236,11 @@ class RegisterController with ChangeNotifier {
         log("otp verification sucess ");
         // await SuccessDialog(
         //   onButtonPressed: () {
-        //     Navigator.pushNamed(context, "/bottomnavigation");
+        //
         //   },
         // );
-
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) {
-            return AlertDialog(
-              content: Container(
-                height: 100,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Success !",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.green,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      "Your account have been created successfully",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        // fontWeight: FontWeight.bold,
-                        // fontSize: 20,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/bottomnavigation");
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.button_color,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Okay",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+        Navigator.pushNamed(context, "/bottomnavigation");
+        showSuccessDialog(context);
       }
     }
     if (jsonResponse['status'] == "failure") {
@@ -377,5 +256,67 @@ class RegisterController with ChangeNotifier {
 
     isLoading = false;
     notifyListeners();
+  }
+
+  void showSuccessDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          content: Container(
+            height: 100,
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  "Welcome!",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "The expert in anything was once a beginner.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, "/bottomnavigation");
+                },
+                child: Container(
+                  height: 40,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    color: ColorConstants.button_color,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Get Started",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

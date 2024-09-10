@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,6 +23,12 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushNamed(context, "/login");
       }
     });
+    var provider = context.read<HomepageController>();
+    provider.getRecommendedCourses();
+    provider.getBanners();
+    provider.getTopCourses();
+    provider.getFeaturedCourse();
+    provider.getCategoryList();
     super.initState();
   }
 

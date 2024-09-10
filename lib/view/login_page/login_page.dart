@@ -1,14 +1,13 @@
-import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
-import 'package:learning_app/main.dart';
-import 'package:learning_app/view/account_page/change_pasd/change_password.dart';
 import 'package:learning_app/view/login_page/forgot_password/forgot_password.dart';
 import 'package:provider/provider.dart';
 
@@ -20,21 +19,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool invisible = true;
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
+    // context.read<RegisterController>().reset();
     if (kDebugMode) {
-      emailController.text = 'jaan1@gmail.com';
-      passwordController.text = 'Jaan@2255';
+      emailController.text = 'test123@gmail.com';
+      passwordController.text = 'Jaan@1234';
     }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    var provider = context.watch<RegisterController>();
+    var providerForget = context.watch<ForgotPasswordController>();
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -55,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 40,
                 ),
                 CustomTextField(
+                  errorText: context.watch<RegisterController>().loginErrorMsg,
                   controller: emailController,
                   hintText: "Email address",
                   validator: (String? value) {
@@ -64,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                       return "Enter a valid email address";
                     }
+
                     return null;
                   },
                 ),
@@ -115,15 +120,66 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
+                      child: provider.isLoading
+                          ? CircularProgressIndicator(
+                              color: ColorConstants.primary_white,
+                            )
+                          : Text(
+                              "Login",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
                     ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () async {
+                    try {
+                      await signInWithGoogle();
+                    } catch (e) {
+                      print("Error during Google login: $e");
+                    }
+                  },
+                  child: Container(
+                    height: 50,
+                    // width: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: providerForget.isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            color: ColorConstants.primary_white,
+                          ))
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Container(
+                                  child: Image.asset(
+                                      "assets/images/google_icon.png"),
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  "Google Login",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
                 ),
                 SizedBox(
@@ -141,31 +197,53 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 10,
                 ),
-                InkWell(
-                  onTap: () async {
-                    Navigator.pushNamed(context, "/register");
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      text: "Don't have an account? ",
-                      style: TextStyle(color: Colors.black),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: "Register",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: ColorConstants.button_color,
-                          ),
-                        ),
-                      ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: TextStyle(color: Colors.black),
+                        children: <TextSpan>[],
+                      ),
                     ),
-                  ),
-                ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "/register");
+                      },
+                      child: Text(
+                        "Register",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: ColorConstants.button_color,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future signInWithGoogle() async {
+    try {
+      await googleSignIn.signOut();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      log("google user---$googleUser");
+      var googleEmail = googleUser!.email;
+      var googleName = googleUser.displayName;
+      var user_id = googleUser.id;
+      // var googlepassword = googleUser.id;
+      // log("$googlepassword,$googleOTP,$googleEmail");
+      await context
+          .read<ForgotPasswordController>()
+          .socialLogin(googleEmail, googleName, user_id, context);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

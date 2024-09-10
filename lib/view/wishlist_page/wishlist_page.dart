@@ -20,6 +20,11 @@ class _WishlistPageState extends State<WishlistPage> {
       ),
       body: ListView.separated(
           itemBuilder: (context, index) => HorizontalCard(
+                description: "",
+                author_name: "dshgh",
+                course_name: "nejdk",
+                photo: "wmkm",
+                price: 324,
                 islearning: false,
               ),
           separatorBuilder: (context, index) => SizedBox(

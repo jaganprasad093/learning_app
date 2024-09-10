@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/controller/notification_controlller.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotPasswordController with ChangeNotifier {
@@ -15,6 +17,11 @@ class ForgotPasswordController with ChangeNotifier {
 
   String? email_validate;
   String? otp_validate;
+  reset() {
+    email_validate = null;
+    otp_validate = null;
+  }
+
   otpSend(
     BuildContext context,
     var email,
@@ -135,6 +142,66 @@ class ForgotPasswordController with ChangeNotifier {
       );
     }
 
+    isLoading = false;
+    notifyListeners();
+  }
+
+// google login
+
+  socialLogin(var email, var name, var user_id, BuildContext context) async {
+    isLoading = true;
+    final url = 'http://learningapp.e8demo.com/api/social_login/';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'email': email,
+          'name': name,
+          'user_social_id': user_id,
+        }),
+      );
+
+      var jsonResponse = jsonDecode(response.body);
+      log("Response JSON: ${jsonResponse}");
+
+      if (response.statusCode == 200) {
+        var result = jsonResponse["result"];
+        log("Result: $result");
+
+        if (result == "success") {
+          var access_token = jsonResponse["token"]["access_token"];
+          var refresh_token = jsonResponse["token"]["refresh_token"];
+          var email = jsonResponse["email"];
+          var user_id = jsonResponse["id"];
+
+          await context.read<RegisterController>().saveUserData(access_token,
+              refresh_token, user_id, email, "", name, "", "", true, "", "");
+
+          Navigator.pushReplacementNamed(context, "/bottomnavigation");
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => BottomNavigation(initialIndex: 0),
+          //     ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text(
+                  "Your account is blocked. Please send an inquiry to support"),
+            ),
+          );
+        }
+      } else {
+        log("Login failed: ${response.body}");
+      }
+    } catch (error) {
+      log("Error occurred: $error");
+    }
     isLoading = false;
     notifyListeners();
   }

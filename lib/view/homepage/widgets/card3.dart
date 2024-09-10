@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 
-class Card2 extends StatelessWidget {
+class Card3 extends StatelessWidget {
   final int index;
-  Card2({
+  Card3({
     Key? key,
     required this.index,
   }) : super(key: key);
@@ -15,7 +15,7 @@ class Card2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider =
-        context.watch<HomepageController>().topCoursesModel?.data?[index];
+        context.watch<HomepageController>().featuredCoursesModel?.data?[index];
     return Container(
       width: 150,
       child: Column(
@@ -34,20 +34,19 @@ class Card2 extends StatelessWidget {
             provider?.courseName ?? "",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
+          Text(
+            provider?.instructor?.name ?? "",
+            // maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(provider?.instructor?.name ?? ""),
-                  Text(
-                    "₹" + "${provider?.price}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                ],
+              Text(
+                "₹" + "${provider?.price}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              Icon(Icons.local_mall)
+              Icon(Icons.local_mall),
             ],
           ),
         ],

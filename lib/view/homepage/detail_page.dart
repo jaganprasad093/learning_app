@@ -4,7 +4,19 @@ import 'package:learning_app/view/homepage/widgets/recommentions.dart';
 import 'package:learning_app/view/search_screen/widgets/search_card.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({super.key});
+  final String author_name;
+  final String description;
+  final String phone;
+  final price;
+  final String course_name;
+
+  const DetailPage(
+      {super.key,
+      required this.author_name,
+      required this.description,
+      required this.phone,
+      required this.price,
+      required this.course_name});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -32,7 +44,7 @@ class _DetailPageState extends State<DetailPage> {
                 child: Container(
                   color: ColorConstants.button_color,
                   child: Image.network(
-                    "https://images.pexels.com/photos/27862762/pexels-photo-27862762/free-photo-of-a-man-standing-in-front-of-a-wall-with-a-bag.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                    widget.phone,
                     fit: BoxFit.cover,
                   ),
                   height: 200,
@@ -43,12 +55,17 @@ class _DetailPageState extends State<DetailPage> {
                 height: 10,
               ),
               Text(
-                "Tile",
+                widget.course_name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                "Sub Tile",
+                widget.description,
+                // overflow: TextOverflow.ellipsis,
+                // maxLines: 2,
                 style: TextStyle(),
+              ),
+              SizedBox(
+                height: 10,
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
@@ -60,7 +77,7 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
               Text(
-                "₹ 899",
+                "₹ " + "${widget.price}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
               ),
               SizedBox(
@@ -73,13 +90,16 @@ class _DetailPageState extends State<DetailPage> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   Text(
-                    "Authors name",
+                    widget.author_name,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                         color: ColorConstants.button_color),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 10,
               ),
               Container(
                 height: 53,

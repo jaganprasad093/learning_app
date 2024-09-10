@@ -1,16 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
-import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -26,9 +22,9 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController address_Controller = TextEditingController();
   TextEditingController date_Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey _menuKey = GlobalKey();
+  // final GlobalKey _menuKey = GlobalKey();
   var profile_pic;
-  File? _imageFile;
+  // File? _imageFile;
 
   @override
   void initState() {
@@ -41,7 +37,11 @@ class _EditProfileState extends State<EditProfile> {
 
     // Initialize the controllers with stored values
     name_Controller.text = prefs.getString("name") ?? "";
-    phone_controller.text = prefs.getString("mobile") ?? "";
+    var mobile = prefs.getString("mobile") ?? "";
+    if (mobile.startsWith("+91")) {
+      return mobile = mobile.substring(3);
+    }
+    phone_controller.text = mobile;
     email_Controller.text = prefs.getString("email") ?? "";
     selectedGender = prefs.getString("gender");
     address_Controller.text = prefs.getString("address") ?? "";
@@ -61,7 +61,7 @@ class _EditProfileState extends State<EditProfile> {
         print("Date parsing error: $e");
       }
     }
-    log("pick image--$_imageFile");
+    // log("pick image--$_imageFile");
     // Notify the UI to update with the new values
     setState(() {});
   }
@@ -72,41 +72,10 @@ class _EditProfileState extends State<EditProfile> {
   ];
   String? selectedGender;
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-        profile_pic = pickedFile.path;
-        // Save the selected image path in SharedPreferences
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setString('profile_pic', profile_pic);
-        });
-      });
-    }
-  }
-
-  Future<void> _captureImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-        profile_pic = pickedFile.path;
-
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setString('profile_pic', profile_pic);
-        });
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    var provider = context.read<EditController>();
+    var provider = context.watch<EditController>();
+    var _imageFile = provider.imageFile;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -240,6 +209,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 SizedBox(height: 10),
                 DropdownButtonFormField<String>(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
                     focusedBorder: OutlineInputBorder(),
@@ -269,7 +239,7 @@ class _EditProfileState extends State<EditProfile> {
                   }).toList(),
                   validator: (String? value) {
                     return (value == null || value.isEmpty)
-                        ? 'Please select gender'
+                        ? 'Select gender'
                         : null;
                   },
                 ),
@@ -282,7 +252,7 @@ class _EditProfileState extends State<EditProfile> {
                   hintText: "Date of birth",
                   validator: (String? value) {
                     return (value == null || value.isEmpty)
-                        ? 'Please enter a date'
+                        ? 'Select date of birth'
                         : null;
                   },
                 ),
@@ -298,7 +268,7 @@ class _EditProfileState extends State<EditProfile> {
                     maxLines: 10,
                     validator: (String? value) {
                       return (value == null || value.isEmpty)
-                          ? 'Please enter a address'
+                          ? 'Enter a address'
                           : null;
                     },
                   ),
@@ -412,14 +382,15 @@ class _EditProfileState extends State<EditProfile> {
       ],
     ).then((value) {
       if (value == 'gallery') {
-        _pickImage();
+        context.read<EditController>().pickImage();
       } else if (value == 'camera') {
-        _captureImage();
+        context.read<EditController>().captureImage();
       }
     });
   }
 
   DateTime selectedDate = DateTime(2015, 12, 31);
+
   Future<void> selectDate(
     BuildContext context,
     TextEditingController controller,
@@ -455,9 +426,9 @@ class _EditProfileState extends State<EditProfile> {
             "${picked.day.toString().padLeft(2, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.year.toString()}";
         controller.value = TextEditingValue(text: formattedDate);
       });
-    } else if (selectedDate == null) {
+    } else {
       String formattedDate =
-          "${DateTime.now().day.toString().padLeft(2, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().year.toString()}";
+          "${selectedDate.day.toString().padLeft(2, '0')}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.year.toString()}";
       controller.value = TextEditingValue(text: formattedDate);
     }
   }

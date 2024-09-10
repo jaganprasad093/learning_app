@@ -7,16 +7,30 @@ import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ForgotPassword extends StatelessWidget {
-  TextEditingController email_controller = TextEditingController();
-  bool invisible = true;
-  final _formKey = GlobalKey<FormState>();
+class ForgotPassword extends StatefulWidget {
   ForgotPassword({super.key});
+
+  @override
+  State<ForgotPassword> createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  TextEditingController email_controller = TextEditingController();
+
+  bool invisible = true;
+
+  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    var provider = context.read<ForgotPasswordController>();
+    provider.reset();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var provider = context.watch<ForgotPasswordController>();
-    String? email_validate;
+    // String email_validate;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -53,9 +67,9 @@ class ForgotPassword extends StatelessWidget {
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                       return "Enter a valid email address";
                     }
-                    if (email_validate != null) {
-                      return "User with email already exists.";
-                    }
+                    // if (email_validate != null) {
+                    //   return "User with email already exists.";
+                    // }
 
                     return null;
                   },

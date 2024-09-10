@@ -1,7 +1,6 @@
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/login&registration/changepsd_controler.dart';
-import 'package:learning_app/core/widgets/custom_button.dart';
+import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +17,10 @@ class _ChangepasswordState extends State<Changepassword> {
   TextEditingController reenter_controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  String? _validatePassword(String? value, {bool isReenter = false}) {
+  String? _validatePassword(String? enterpsd, String? value,
+      {bool isReenter = false}) {
     if (value == null || value.isEmpty) {
-      return 'Please enter password';
+      return enterpsd;
     }
     if (value.length < 8) {
       return "Password must be at least 8 characters long";
@@ -64,28 +64,48 @@ class _ChangepasswordState extends State<Changepassword> {
                   height: 150,
                 ),
                 CustomTextField(
+                  errorText:
+                      context.watch<ChangepsdControler>().passwordValidate,
                   controller: old_controller,
                   hintText: "Old Password",
                   isPassword: true,
-                  validator: (value) => _validatePassword(value),
+                  validator: (value) =>
+                      _validatePassword("Enter old password ", value),
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
                   controller: new_controller,
                   hintText: "New Password",
                   isPassword: true,
-                  validator: (value) => _validatePassword(value),
+                  validator: (value) =>
+                      _validatePassword("Enter new password ", value),
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
                   controller: reenter_controller,
                   hintText: "Re-enter Password",
                   isPassword: true,
-                  validator: (value) =>
-                      _validatePassword(value, isReenter: true),
+                  validator: (value) => _validatePassword(
+                    "Re-enter password ",
+                    value,
+                    isReenter: true,
+                  ),
                 ),
                 SizedBox(height: 80),
-                CustomButton(
+                // CustomButton(
+                //   onTap: () {
+                //     if (_formKey.currentState!.validate()) {
+                //       // Uncomment and implement your password change logic
+                //       context.read<ChangepsdControler>().changepsd(
+                //           context,
+                //           old_controller.text,
+                //           new_controller.text,
+                //           reenter_controller.text);
+                //     }
+                //   },
+                //   text: "Submit",
+                // ),
+                InkWell(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
                       // Uncomment and implement your password change logic
@@ -96,8 +116,29 @@ class _ChangepasswordState extends State<Changepassword> {
                           reenter_controller.text);
                     }
                   },
-                  text: "Submit",
-                ),
+                  child: Container(
+                    height: 50,
+                    // width: 200,
+                    decoration: BoxDecoration(
+                      color: ColorConstants.button_color,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: context.watch<ChangepsdControler>().isLoading
+                          ? CircularProgressIndicator(
+                              color: ColorConstants.primary_white,
+                            )
+                          : Text(
+                              "Submit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

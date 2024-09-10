@@ -3,68 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditController with ChangeNotifier {
-//   editprofileData(var name, var phone, var email, var gender, var dob,
-//       var address, BuildContext context, var profile_pic) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     final url = 'http://learningapp.e8demo.com/api/user-edit/';
-//     final accessToken = prefs.getString("access_token") ?? "";
-
-//     Map<String, dynamic> data = {
-//       "name": name,
-//       "address": address,
-//       "email": email,
-//       "dob": dob,
-//       "gender": gender,
-//       "mobile": phone,
-//       "profile_pic": profile_pic,
-//     };
-//     // log("name--$name");
-//     // log("address--$address");
-//     String body = jsonEncode(data);
-//     final response = await http.put(
-//       Uri.parse(url),
-//       headers: {
-//         'Authorization': 'Bearer $accessToken',
-//         'Content-Type': 'application/json',
-//       },
-//       body: body,
-//     );
-//     log(response.body);
-//     var jsonResponse = jsonDecode(response.body);
-
-//     if (response.statusCode == 200) {
-//       if (jsonResponse['status'] != "failure") {
-// // context.read<RegisterController>().
-
-//         await context.read<RegisterController>().saveUserData(
-//             accessToken,
-//             "refreshToken",
-//             1,
-//             email,
-//             phone,
-//             name,
-//             gender,
-//             dob,
-//             true,
-//             address,
-//             profile_pic);
-//       }
-//       Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => BottomNavigation(initialIndex: 4),
-//           ));
-//       log('Data updated successfully: ${response.body}');
-//     } else {
-//       log('Failed to update data: ${response.statusCode}');
-//     }
-//   }
+  var profile_pic;
+  File? imageFile;
   bool _isloading = false;
   bool get isLoading => _isloading;
   set isLoading(bool value) {
@@ -86,6 +34,7 @@ class EditController with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final url = 'http://learningapp.e8demo.com/api/user-edit/';
     final accessToken = prefs.getString("access_token") ?? "";
+    log("accestoken---$accessToken");
     log("profile pic in controller---$profilePic");
     // if (profilePic == null) {
     //   log('No profile image selected.');
@@ -94,7 +43,6 @@ class EditController with ChangeNotifier {
 
     var request = http.MultipartRequest('PUT', Uri.parse(url));
     request.headers['Authorization'] = 'Bearer $accessToken';
-
     request.fields['name'] = name;
     request.fields['address'] = address;
     request.fields['email'] = email;
@@ -155,5 +103,80 @@ class EditController with ChangeNotifier {
       log('Failed to update data: ${response.statusCode}');
     }
     isLoading = false;
+  }
+
+  deleteProfile(BuildContext context) async {
+    final url = Uri.parse("http://learningapp.e8demo.com/api/delete-profile/");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString("access_token") ?? "";
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+    };
+
+    final response = await http.delete(url, headers: headers);
+    log(response.body);
+    if (response.statusCode == 200) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.clear();
+      Navigator.pushReplacementNamed(context, "/login");
+      log("response--${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Deleted sucessfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      return true;
+    } else {
+      log('Failed to delete item: ${response.statusCode} ${response.body}');
+      return false;
+    }
+  }
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      await _cropImage(pickedFile.path);
+    }
+    notifyListeners();
+  }
+
+  Future<void> captureImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      await _cropImage(pickedFile.path);
+    }
+    notifyListeners();
+  }
+
+  Future<void> _cropImage(String imagePath) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+        ),
+      ],
+    );
+
+    if (croppedFile != null) {
+      imageFile = File(croppedFile.path);
+      profile_pic = croppedFile.path;
+      log("propic---$profile_pic");
+      log("image file---$imageFile");
+      // Optionally save to SharedPreferences
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // prefs.setString('profile_pic', profile_pic);
+
+      notifyListeners();
+    }
   }
 }

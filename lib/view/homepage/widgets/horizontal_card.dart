@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app/core/constants/color_constants.dart';
 
 class HorizontalCard extends StatelessWidget {
   final bool islearning;
-  const HorizontalCard({super.key, required this.islearning});
+  final String photo;
+  final String author_name;
+  final price;
+  final String course_name;
+  final String description;
+  const HorizontalCard(
+      {super.key,
+      required this.islearning,
+      required this.photo,
+      required this.author_name,
+      required this.price,
+      required this.course_name,
+      required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +28,7 @@ class HorizontalCard extends StatelessWidget {
             height: 70,
             width: 70,
             child: Image.network(
-              "https://images.pexels.com/photos/19641063/pexels-photo-19641063/free-photo-of-silhouette-of-couple-on-a-hill.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+              photo,
               fit: BoxFit.fill,
             ),
           ),
@@ -27,21 +38,31 @@ class HorizontalCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "We recommend verifying at least one more ",
+                course_name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 softWrap: true,
               ),
               Text(
-                "least one more email",
+                description,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
                 style: TextStyle(),
+                softWrap: true,
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                author_name,
+                style: TextStyle(fontWeight: FontWeight.bold),
                 softWrap: true,
               ),
               islearning
                   ? Container()
                   : Text(
-                      "₹ 674.00",
+                      "₹ " + "${price.toInt()}",
                       style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       softWrap: true,
                     )
             ],

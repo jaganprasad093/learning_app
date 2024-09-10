@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   final bool? readOnly;
   bool? enabled;
   final int? maxLines;
+  final List<TextInputFormatter>? inputFormatters;
 
   CustomTextField({
     Key? key,
@@ -38,6 +40,7 @@ class CustomTextField extends StatelessWidget {
     this.readOnly,
     this.enabled,
     this.maxLines,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
@@ -47,6 +50,8 @@ class CustomTextField extends StatelessWidget {
     return StatefulBuilder(
       builder: (context, setState) {
         return TextFormField(
+          inputFormatters: inputFormatters,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
           maxLines: isPassword ? 1 : maxLines,
           enabled: enabled,

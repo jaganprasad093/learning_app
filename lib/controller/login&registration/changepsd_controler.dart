@@ -2,14 +2,22 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangepsdControler with ChangeNotifier {
+  bool _isloading = false;
+  bool get isLoading => _isloading;
+  set isLoading(bool value) {
+    _isloading = value;
+    notifyListeners();
+  }
+
+  String? passwordValidate;
+
   changepsd(BuildContext context, var newpassword, var old_password,
       var retype_password) async {
+    isLoading = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final url = 'http://learningapp.e8demo.com/api/change-password/';
     final accessToken = prefs.getString("access_token") ?? "";
@@ -37,7 +45,7 @@ class ChangepsdControler with ChangeNotifier {
       body: body,
     );
     log(response.body);
-    var jsonResponse = jsonDecode(response.body);
+    // var jsonResponse = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
 // context.read<RegisterController>().
@@ -45,12 +53,7 @@ class ChangepsdControler with ChangeNotifier {
       var jsonResponse = jsonDecode(response.body);
 
       if (jsonResponse['result'] == "failure") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text("Old password is not correct"),
-          ),
-        );
+        passwordValidate = "Old password is not correct";
       } else {
         // final accessToken = prefs.getString("access_token") ?? "";
         // final email = prefs.getString("email") ?? "";
@@ -90,5 +93,7 @@ class ChangepsdControler with ChangeNotifier {
     } else {
       log('Failed to update data: ${response.statusCode}');
     }
+    isLoading = false;
+    notifyListeners();
   }
 }

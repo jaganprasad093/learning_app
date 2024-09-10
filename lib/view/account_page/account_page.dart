@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
-import 'package:learning_app/core/constants/image_constants.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   var name = "";
   var email = "";
-  var profile_pic;
+  var profile_pic = "";
   @override
   void initState() {
     init();
@@ -26,7 +26,7 @@ class _AccountPageState extends State<AccountPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = prefs.getString("name") ?? "";
     email = prefs.getString("email") ?? "";
-    profile_pic = prefs.getString("profile_pic") ?? "fdgg";
+    profile_pic = prefs.getString("profile_pic") ?? "";
     log("profile pic---$profile_pic");
     setState(() {});
   }
@@ -54,7 +54,7 @@ class _AccountPageState extends State<AccountPage> {
             Center(
               child: Stack(children: [
                 CircleAvatar(
-                  backgroundImage: profile_pic == null
+                  backgroundImage: profile_pic.isEmpty
                       ? NetworkImage(
                           "https://i0.wp.com/florrycreativecare.com/wp-content/uploads/2020/08/blank-profile-picture-mystery-man-avatar-973460.jpg?ssl=1")
                       : NetworkImage(
@@ -77,6 +77,8 @@ class _AccountPageState extends State<AccountPage> {
             Column(
               children: [
                 InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   onTap: () {
                     Navigator.pushNamed(context, "/editprofile");
                   },
@@ -96,6 +98,8 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
                 InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   onTap: () {
                     Navigator.pushNamed(context, "/changepsd");
                   },
@@ -149,40 +153,51 @@ class _AccountPageState extends State<AccountPage> {
                     ],
                   ),
                 ),
-                Container(
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "About app",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      Icon(Icons.arrow_forward_ios_rounded)
-                    ],
+                InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "About app",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
                   ),
                 ),
-                Container(
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Delete account",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      Icon(Icons.arrow_forward_ios_rounded)
-                    ],
+                InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () {
+                    deleteAccount();
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Delete account",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -194,7 +209,7 @@ class _AccountPageState extends State<AccountPage> {
                   },
                   child: Container(
                     child: Text(
-                      "Log Out",
+                      "LogOut",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -268,6 +283,79 @@ class _AccountPageState extends State<AccountPage> {
                       child: Center(
                         child: Text(
                           "Logout",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // delete accout function
+  void deleteAccount() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          content: Container(
+            height: 100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Are you sure you want delete account permentaly?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black.withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Center(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        context.read<EditController>().deleteProfile(context);
+                      },
+                      child: Center(
+                        child: Text(
+                          "Delete",
                           style: TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,

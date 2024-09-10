@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1032446983070",
+    "project_id": "learning-app-nuox",
+    "storage_bucket": "learning-app-nuox.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032446983070:android:b8e8b10ab813c56579348f",
+        "android_client_info": {
+          "package_name": "com.jagan.learning_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032446983070-s8bdj59n7g4bfotrmtkoh5vaitbgt7nd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jagan.learning_app",
+            "certificate_hash": "4e13f8f34840cfbd776d6b67512d5226973176ca"
+          }
+        },
+        {
+          "client_id": "1032446983070-c3b2tercqll8gve3eqjnaiurjf5rhpsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2C2KQpt-sY7W9FV3gaRoRa3mOEKqL4o8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032446983070-c3b2tercqll8gve3eqjnaiurjf5rhpsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,10 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/controller/login&registration/changepsd_controler.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
 import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
-import 'package:learning_app/core/widgets/pop_up_screen.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
 import 'package:learning_app/view/account_page/edit_profile/edit_profile.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
@@ -16,10 +17,10 @@ import 'package:learning_app/view/homepage/see_all_page.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
 import 'package:learning_app/view/account_page/change_pasd/change_password.dart';
 import 'package:learning_app/view/login_page/forgot_password/forgot_psd2.dart';
-import 'package:learning_app/view/login_page/forgot_password/otp_screen.dart';
 import 'package:learning_app/view/login_page/login_page.dart';
 import 'package:learning_app/view/my_learning/my_learning.dart';
 import 'package:learning_app/view/login_page/forgot_password/forgot_password.dart';
+import 'package:learning_app/view/notification_screen/notificationScreen.dart';
 import 'package:learning_app/view/register_page/register_page.dart';
 import 'package:learning_app/view/register_page/widgets/otp_verification.dart';
 import 'package:learning_app/view/search_screen/search_screen.dart';
@@ -27,9 +28,11 @@ import 'package:learning_app/view/slpash_screen/splash_screen.dart';
 import 'package:learning_app/view/wishlist_page/wishlist_page.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   NotificationControlller().initNotification();
+
+  await Firebase.initializeApp();
   runApp(LearningApp());
 }
 
@@ -59,6 +62,9 @@ class _LearningAppState extends State<LearningApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => ForgotPasswordController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HomepageController(),
         )
       ],
       child: MaterialApp(
@@ -76,8 +82,10 @@ class _LearningAppState extends State<LearningApp> {
           '/mylearning': (context) => const MyLearning(),
           '/account': (context) => const AccountPage(),
           '/search': (context) => const SearchScreen(),
-          '/seeall': (context) => const SeeAllPage(),
-          '/detailpage': (context) => const DetailPage(),
+          // '/seeall': (context) => const SeeAllPage(
+          //       caption: "",
+          //     ),
+          // '/detailpage': (context) => const DetailPage(),
           '/recommentions': (context) => const RecommentionsCard(),
           '/editprofile': (context) => const EditProfile(),
           '/checkout': (context) => const CheckoutPage(),
@@ -86,7 +94,7 @@ class _LearningAppState extends State<LearningApp> {
           '/verification': (context) => Verification(),
           '/changepsd': (context) => Changepassword(),
           '/forgotpsd': (context) => ForgotPsd2(),
-          // '/otpscreen': (context) => OtpScreen(),
+          '/notification': (context) => Notificationscreen(),
         },
       ),
     );

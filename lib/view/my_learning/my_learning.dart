@@ -29,6 +29,11 @@ class _MyLearningState extends State<MyLearning> {
           ListView.separated(
               shrinkWrap: true,
               itemBuilder: (context, index) => HorizontalCard(
+                    description: "",
+                    author_name: "dshgh",
+                    course_name: "nejdk",
+                    photo: "wmkm",
+                    price: 876,
                     islearning: true,
                   ),
               separatorBuilder: (context, index) => SizedBox(
