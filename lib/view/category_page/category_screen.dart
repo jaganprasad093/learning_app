@@ -63,10 +63,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                var data = context
-                                    .read<CategoryController>()
-                                    .categorymodel
-                                    ?.data?[index];
+                                var data =
+                                    catProvider.categorymodel?.data?[index];
                                 var course_name = data?.courseName;
                                 var rating = data?.rating;
                                 // var offerPrice = data?.offerPrice;
@@ -118,7 +116,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 vertical: 5,
                               ),
                               child: Text(
-                                "jdsgkhdshjhkuhuhuj",
+                                "{ catProvider.categorymodel?.data?[index].subCategory.subCatehoryName}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: ColorConstants.button_color,
