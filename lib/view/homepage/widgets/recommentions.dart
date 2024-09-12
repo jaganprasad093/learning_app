@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
+import 'package:provider/provider.dart';
 
 class RecommentionsCard extends StatelessWidget {
-  const RecommentionsCard({super.key});
+  final int index;
+
+  const RecommentionsCard({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    var data =
+        context.watch<HomepageController>().recommendedModel?.data?[index];
     return Row(
       children: [
         Container(
           height: 100,
           width: 150,
           child: Image.network(
-            "https://images.pexels.com/photos/27791671/pexels-photo-27791671/free-photo-of-evening-street.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+            data?.thumbnail?.fullSize ?? "",
             fit: BoxFit.fill,
           ),
         ),
@@ -24,13 +30,21 @@ class RecommentionsCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "te tailored learning paths.... ",
+                data?.courseName ?? "",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              SizedBox(
-                height: 10,
+              Text(
+                data?.description ?? "",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
-              Text("athors name")
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                data?.instructor?.name ?? "",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),

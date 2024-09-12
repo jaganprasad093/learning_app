@@ -119,14 +119,16 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, "/checkout");
+                  },
                   child: Container(
                     height: 50,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Wishlist",
+                          "Checkout",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
@@ -209,7 +211,7 @@ class _AccountPageState extends State<AccountPage> {
                   },
                   child: Container(
                     child: Text(
-                      "LogOut",
+                      "Logout",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,

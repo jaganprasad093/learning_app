@@ -172,7 +172,6 @@ class EditController with ChangeNotifier {
       profile_pic = croppedFile.path;
       log("propic---$profile_pic");
       log("image file---$imageFile");
-      // Optionally save to SharedPreferences
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       // prefs.setString('profile_pic', profile_pic);
 

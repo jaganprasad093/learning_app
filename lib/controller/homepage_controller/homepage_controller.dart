@@ -1,14 +1,16 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:learning_app/core/constants/url_const.dart';
 import 'package:learning_app/model/bannerModel.dart';
 import 'package:learning_app/model/categorlistModel.dart';
+import 'package:learning_app/model/courseDetail_model.dart';
 import 'package:learning_app/model/featuredCourses.dart';
+import 'package:learning_app/model/recentlyViewedModel.dart';
 import 'package:learning_app/model/recommended_model.dart';
 import 'package:learning_app/model/topCourseModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomepageController with ChangeNotifier {
   RecommendedModel? recommendedModel;
@@ -16,7 +18,20 @@ class HomepageController with ChangeNotifier {
   TopCoursesModel? topCoursesModel;
   FeaturedCoursesModel? featuredCoursesModel;
   CategoryListModel? categoryListModel;
+  CourseDetailModel? courseDetailModel;
+  RecentlyViewedModel? recentlyViewedModel;
   List<String>? bannerImg;
+
+  bool _isloading = false;
+  bool get isLoading => _isloading;
+  set isLoading(bool value) {
+    _isloading = value;
+    // notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+  }
+
   getRecommendedCourses() async {
     final url = '${UrlConst.baseUrl}recommended_courses/';
     log(url);
@@ -24,6 +39,8 @@ class HomepageController with ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      var jsonResponse = jsonDecode(response.body);
+
       recommendedModel = RecommendedModel.fromJson(data);
     } else {
       log('Failed to load courses: ${response.statusCode}');
@@ -97,5 +114,53 @@ class HomepageController with ChangeNotifier {
     } else {
       log('Failed to load courses: ${response.statusCode}');
     }
+  }
+
+  getRecentlyViewed() async {
+    isLoading = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString("access_token") ?? "";
+    final url = '${UrlConst.baseUrl}recent-courses/?auth_token=$accessToken';
+    log(url);
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+    };
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      var jsonResponse = jsonDecode(response.body);
+
+      recentlyViewedModel = RecentlyViewedModel.fromJson(data);
+    } else {
+      log('Failed to load courses: ${response.statusCode}');
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+
+  getCourseDetails(var id) async {
+    isLoading = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString("access_token") ?? "";
+
+    final url =
+        '${UrlConst.baseUrl}user-coursedetail/?coursedetail_id=$id&auth_token=$accessToken';
+    log(url);
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+    };
+
+    final response = await http.get(Uri.parse(url), headers: headers);
+    // log(response.body);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      courseDetailModel = CourseDetailModel.fromJson(data);
+    } else {
+      log('Failed to load courses: ${response.statusCode}');
+    }
+    getRecentlyViewed();
+    isLoading = false;
+    notifyListeners();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:learning_app/view/homepage/see_all_page.dart';
 import 'package:learning_app/view/homepage/widgets/card2.dart';
 import 'package:provider/provider.dart';
@@ -30,9 +31,23 @@ class Topcourses extends StatelessWidget {
                 ListView.separated(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemBuilder: (context, index) => Card2(
-                    index: index,
-                  ),
+                  itemBuilder: (context, index) {
+                    var provider = context.watch<HomepageController>();
+                    var id = provider.topCoursesModel?.data?[index].id;
+                    return InkWell(
+                      onTap: () {
+                        context.read<HomepageController>().getCourseDetails(id);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailPage(id: id ?? 0),
+                            ));
+                      },
+                      child: Card2(
+                        index: index,
+                      ),
+                    );
+                  },
                   separatorBuilder: (context, index) => SizedBox(
                     width: 10,
                   ),

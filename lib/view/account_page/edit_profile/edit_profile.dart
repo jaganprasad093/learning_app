@@ -23,7 +23,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController date_Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   // final GlobalKey _menuKey = GlobalKey();
-  var profile_pic;
+  var profile_pic = "";
   // File? _imageFile;
 
   @override
@@ -46,8 +46,9 @@ class _EditProfileState extends State<EditProfile> {
     selectedGender = prefs.getString("gender");
     address_Controller.text = prefs.getString("address") ?? "";
 
-    profile_pic = prefs.getString("profile_pic");
+    profile_pic = prefs.getString("profile_pic") ?? "";
     log("adress--${prefs.getString("address")}");
+    log("profile pic edit --${profile_pic}");
     // Initialize the date controller with the formatted date
     String? dateString = prefs.getString("dob");
     if (dateString != null && dateString.isNotEmpty) {
@@ -98,8 +99,7 @@ class _EditProfileState extends State<EditProfile> {
                 Center(
                   child: Stack(children: [
                     CircleAvatar(
-                      backgroundImage: profile_pic == null ||
-                              profile_pic.isEmpty
+                      backgroundImage: profile_pic.isEmpty
                           ? NetworkImage(
                               "https://i0.wp.com/florrycreativecare.com/wp-content/uploads/2020/08/blank-profile-picture-mystery-man-avatar-973460.jpg?ssl=1")
                           : _imageFile == null

@@ -4,7 +4,7 @@ import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ImageSlider extends StatefulWidget {
-  final List<String> imageUrls; // List of image URLs to display
+  final List<String> imageUrls;
 
   const ImageSlider({Key? key, required this.imageUrls}) : super(key: key);
 

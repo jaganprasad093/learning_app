@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     provider.getTopCourses();
     provider.getFeaturedCourse();
     provider.getCategoryList();
+    // context.read<Cartcontroller>().AddCartItems();
     super.initState();
   }
 

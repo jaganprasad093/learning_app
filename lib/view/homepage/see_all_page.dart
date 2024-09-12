@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
-import 'package:learning_app/view/homepage/detail_page.dart';
+import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:learning_app/view/homepage/widgets/horizontal_card.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +45,7 @@ class SeeAllPage extends StatelessWidget {
               var price = courseData.price ?? "";
               String photo = courseData.thumbnail?.fullSize ?? "";
               String description = courseData.description ?? "";
+              var id = courseData.id ?? "";
 
               return InkWell(
                 onTap: () {
@@ -52,11 +53,7 @@ class SeeAllPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DetailPage(
-                        author_name: authorName,
-                        course_name: courseName,
-                        description: description,
-                        phone: photo,
-                        price: price,
+                        id: id,
                       ),
                     ),
                   );

@@ -35,6 +35,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = context.read<HomepageController>();
     return Scaffold(
       // appBar: AppBar(
       //   actions: [Icon(Icons.shopping_cart)],
@@ -85,9 +86,12 @@ class _HomepageState extends State<Homepage> {
             SizedBox(
               height: 20,
             ),
-            ImageSlider(
-              imageUrls: context.read<HomepageController>().bannerImg ?? [],
-            ),
+            provider.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : ImageSlider(
+                    imageUrls:
+                        context.read<HomepageController>().bannerImg ?? [],
+                  ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(

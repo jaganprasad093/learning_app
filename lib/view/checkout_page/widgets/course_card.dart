@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/cart_controller/CartController.dart';
+import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:provider/provider.dart';
 
 class CourseCard extends StatelessWidget {
-  const CourseCard({super.key});
+  final String course_name;
+  final String auther_name;
+  final String price;
+  final String TotalAmount;
+  final String photo;
+
+  final String courseID;
+  final String variantID;
+  const CourseCard(
+      {super.key,
+      required this.course_name,
+      required this.auther_name,
+      required this.price,
+      required this.photo,
+      required this.courseID,
+      required this.variantID,
+      required this.TotalAmount});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +44,7 @@ class CourseCard extends StatelessWidget {
                 height: 70,
                 width: 70,
                 child: Image.network(
-                  "https://images.pexels.com/photos/19641063/pexels-photo-19641063/free-photo-of-silhouette-of-couple-on-a-hill.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                  photo,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -35,13 +54,13 @@ class CourseCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "We recommend verifying at least one more ",
+                      course_name,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       softWrap: true,
                     ),
                     Text(
-                      "least one more email",
+                      auther_name,
                       style: TextStyle(),
                       softWrap: true,
                     ),
@@ -55,7 +74,7 @@ class CourseCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "₹399 ",
+                      TotalAmount,
                       style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
@@ -68,7 +87,7 @@ class CourseCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "₹399 ",
+                  "₹ " + "${price}",
                   style: TextStyle(
                       fontSize: 17,
                       // fontWeight: FontWeight.bold,
@@ -90,17 +109,31 @@ class CourseCard extends StatelessWidget {
               // SizedBox(
               //   width: 70,
               // ),
-              Text(
-                "Remove",
-                style: TextStyle(color: ColorConstants.button_color),
+              InkWell(
+                onTap: () {
+                  context
+                      .read<Cartcontroller>()
+                      .removeCartItems(courseID, variantID);
+                },
+                child: Text(
+                  "Remove",
+                  style: TextStyle(color: ColorConstants.button_color),
+                ),
               ),
               Text(
                 "Save for Later",
                 style: TextStyle(color: ColorConstants.button_color),
               ),
-              Text(
-                "Move to Wishlist",
-                style: TextStyle(color: ColorConstants.button_color),
+              InkWell(
+                onTap: () {
+                  context
+                      .read<Wishlistcontroller>()
+                      .AddWishlist(courseID, price, variantID);
+                },
+                child: Text(
+                  "Move to Wishlist",
+                  style: TextStyle(color: ColorConstants.button_color),
+                ),
               ),
             ],
           ),

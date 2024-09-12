@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app/view/search_screen/widgets/search_card.dart';
+import 'package:learning_app/view/homepage/widgets/recentlyViewed.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -52,7 +52,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return SearchCard();
+                  return SearchCard(
+                    index: 0,
+                  );
                 },
               )
             ],

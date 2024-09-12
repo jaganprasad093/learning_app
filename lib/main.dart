@@ -1,17 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/controller/login&registration/changepsd_controler.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
 import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
+import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
 import 'package:learning_app/view/account_page/edit_profile/edit_profile.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:learning_app/view/checkout_page/checkout_page.dart';
 import 'package:learning_app/view/checkout_page/confrim_animated.dart/confrim_animated.dart';
-import 'package:learning_app/view/homepage/detail_page.dart';
+import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:learning_app/view/homepage/homepage.dart';
 import 'package:learning_app/view/homepage/see_all_page.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
@@ -65,6 +67,12 @@ class _LearningAppState extends State<LearningApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => HomepageController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Wishlistcontroller(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Cartcontroller(),
         )
       ],
       child: MaterialApp(
@@ -86,7 +94,9 @@ class _LearningAppState extends State<LearningApp> {
           //       caption: "",
           //     ),
           // '/detailpage': (context) => const DetailPage(),
-          '/recommentions': (context) => const RecommentionsCard(),
+          '/recommentions': (context) => const RecommentionsCard(
+                index: 0,
+              ),
           '/editprofile': (context) => const EditProfile(),
           '/checkout': (context) => const CheckoutPage(),
           '/otp': (context) => ForgotPassword(),

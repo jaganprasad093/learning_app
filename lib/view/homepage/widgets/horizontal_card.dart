@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/core/constants/color_constants.dart';
 
 class HorizontalCard extends StatelessWidget {
   final bool islearning;
@@ -42,13 +43,15 @@ class HorizontalCard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 softWrap: true,
               ),
-              Text(
-                description,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: TextStyle(),
-                softWrap: true,
-              ),
+              description == ""
+                  ? SizedBox()
+                  : Text(
+                      description,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: TextStyle(),
+                      softWrap: true,
+                    ),
               SizedBox(
                 height: 5,
               ),
@@ -57,6 +60,9 @@ class HorizontalCard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
                 softWrap: true,
               ),
+              SizedBox(
+                height: 10,
+              ),
               islearning
                   ? Container()
                   : Text(
@@ -64,7 +70,19 @@ class HorizontalCard extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       softWrap: true,
-                    )
+                    ),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                decoration: BoxDecoration(
+                    color: Colors.grey, borderRadius: BorderRadius.circular(5)),
+                child: Text(
+                  "Bestseller",
+                  style: TextStyle(color: ColorConstants.primary_white),
+                ),
+              ),
             ],
           ),
         )
