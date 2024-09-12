@@ -28,8 +28,7 @@ class _HomepageState extends State<Homepage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = prefs.getString("name") ?? "";
     email = prefs.getString("email") ?? "";
-    context.read<HomepageController>().getRecommendedCourses();
-    context.read<HomepageController>().getBanners();
+
     setState(() {});
   }
 
@@ -40,99 +39,103 @@ class _HomepageState extends State<Homepage> {
       // appBar: AppBar(
       //   actions: [Icon(Icons.shopping_cart)],
       // ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 40,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Welcome, $name",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      // Text("sub titles")
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, "/checkout");
-                          },
-                          child: Icon(Icons.shopping_cart_outlined)),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, "/notification");
-                          },
-                          child: Icon(Icons.notification_important_outlined)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            provider.isLoading
-                ? Center(child: CircularProgressIndicator())
-                : ImageSlider(
-                    imageUrls:
-                        context.read<HomepageController>().bannerImg ?? [],
-                  ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+      body: provider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Skills for everyone & everything",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Welcome, $name",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            // Text("sub titles")
+                          ],
                         ),
-                      ),
-                      Text(
-                          "From critical skills to technical topics, Udemy supports your professional development"),
-                    ],
+                        Row(
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/checkout");
+                                },
+                                child: Icon(Icons.shopping_cart_outlined)),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/notification");
+                                },
+                                child: Icon(
+                                    Icons.notification_important_outlined)),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  Recommented(),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Topcourses(),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Categorieslist(),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Featuredcourse()
+                  provider.isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : ImageSlider(
+                          imageUrls:
+                              context.read<HomepageController>().bannerImg ??
+                                  [],
+                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Skills for everyone & everything",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30,
+                              ),
+                            ),
+                            Text(
+                                "From critical skills to technical topics, Udemy supports your professional development"),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Recommented(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Topcourses(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Categorieslist(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Featuredcourse()
+                      ],
+                    ),
+                  )
                 ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),
     );
   }
 }

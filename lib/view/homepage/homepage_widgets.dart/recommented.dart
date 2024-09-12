@@ -25,7 +25,7 @@ class Recommented extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                height: 200,
+                height: 220,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,

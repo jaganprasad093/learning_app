@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
+import 'package:learning_app/controller/category_controller/category_controller.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/controller/login&registration/changepsd_controler.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
+import 'package:learning_app/controller/notification_controller/notificationsScreenController.dart';
 import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
@@ -15,6 +17,7 @@ import 'package:learning_app/view/checkout_page/checkout_page.dart';
 import 'package:learning_app/view/checkout_page/confrim_animated.dart/confrim_animated.dart';
 import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:learning_app/view/homepage/homepage.dart';
+import 'package:learning_app/view/category_page/seeAllCatergories.dart';
 import 'package:learning_app/view/homepage/see_all_page.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
 import 'package:learning_app/view/account_page/change_pasd/change_password.dart';
@@ -73,6 +76,12 @@ class _LearningAppState extends State<LearningApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => Cartcontroller(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Notificationsscreencontroller(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CategoryController(),
         )
       ],
       child: MaterialApp(
@@ -105,6 +114,7 @@ class _LearningAppState extends State<LearningApp> {
           '/changepsd': (context) => Changepassword(),
           '/forgotpsd': (context) => ForgotPsd2(),
           '/notification': (context) => Notificationscreen(),
+          '/seeallcategories': (context) => Seeallcatergories(),
         },
       ),
     );

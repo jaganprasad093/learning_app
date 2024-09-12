@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
+import 'package:learning_app/controller/notification_controller/notificationsScreenController.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     provider.getTopCourses();
     provider.getFeaturedCourse();
     provider.getCategoryList();
+    context.read<Notificationsscreencontroller>().getNotifications();
     // context.read<Cartcontroller>().AddCartItems();
     super.initState();
   }

@@ -1,11 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/widgets/custom_button.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:learning_app/view/checkout_page/widgets/course_card.dart';
+import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -35,7 +35,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: provider.cartModel?.data?.grandTotal.toInt() == null
+        body: provider.cartModel?.data?.grandTotal.toInt() == null ||
+                provider.cartModel?.data?.grandTotal.toInt() == 0
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -90,25 +91,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  TextSpan(
-                                    text: "₹ 1999",
-                                    style: TextStyle(
-                                      color: Colors.black.withOpacity(.4),
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "  73% off",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                  // TextSpan(
+                                  //   text: "₹ 1999",
+                                  //   style: TextStyle(
+                                  //     color: Colors.black.withOpacity(.4),
+                                  //     decoration: TextDecoration.lineThrough,
+                                  //   ),
+                                  // ),
+                                  // TextSpan(
+                                  //   text: "  73% off",
+                                  //   style: TextStyle(
+                                  //     color: Colors.black,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
                             SizedBox(height: 20),
                             Text(
-                              "1 Course in Cart",
+                              "${provider.cartModel?.data?.cartItem?.length}" +
+                                  " Course in Cart",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -143,14 +145,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                 .toInt();
                                         TotalAmount = price - disAmount;
                                         log("discount amount---$TotalAmount");
-                                        return CourseCard(
-                                          TotalAmount: TotalAmount.toString(),
-                                          auther_name: auther_name ?? "",
-                                          course_name: course_name ?? "",
-                                          photo: photo ?? "",
-                                          price: price.toString(),
-                                          courseID: courseId ?? "",
-                                          variantID: variantID ?? "",
+                                        return InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DetailPage(
+                                                          id: data?.courseId ??
+                                                              0),
+                                                ));
+                                            log("course id in detailpage--${data?.courseId ?? 0}");
+                                          },
+                                          child: CourseCard(
+                                            TotalAmount: TotalAmount.toString(),
+                                            auther_name: auther_name ?? "",
+                                            course_name: course_name ?? "",
+                                            photo: photo ?? "",
+                                            price: price.toString(),
+                                            courseID: courseId ?? "",
+                                            variantID: variantID ?? "",
+                                          ),
                                         );
                                       },
                                       separatorBuilder: (context, index) =>

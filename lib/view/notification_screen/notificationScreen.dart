@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/notification_controller/notificationsScreenController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:provider/provider.dart';
 
-class Notificationscreen extends StatelessWidget {
+class Notificationscreen extends StatefulWidget {
   const Notificationscreen({super.key});
 
   @override
+  State<Notificationscreen> createState() => _NotificationscreenState();
+}
+
+class _NotificationscreenState extends State<Notificationscreen> {
+  @override
+  void initState() {
+    context.read<Notificationsscreencontroller>().getNotifications();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var provider = context.read<Notificationsscreencontroller>();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -45,16 +59,34 @@ class Notificationscreen extends StatelessWidget {
                           SizedBox(
                             width: 20,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Registered Sucessfully",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              Text("1 min ago"),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  provider.notificationModel?.data?[index]
+                                          .subIdentifier ??
+                                      "",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                Text(
+                                  provider.notificationModel?.data?[index]
+                                          .messageTitle ??
+                                      "",
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  provider.notificationModel?.data?[index]
+                                          .createdAt ??
+                                      "",
+                                  style: TextStyle(
+                                      color: ColorConstants.primary_black
+                                          .withOpacity(.4)),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -65,7 +97,7 @@ class Notificationscreen extends StatelessWidget {
           separatorBuilder: (context, index) => SizedBox(
                 height: 15,
               ),
-          itemCount: 5),
+          itemCount: provider.notificationModel?.data?.length ?? 0),
     );
   }
 }

@@ -29,6 +29,10 @@ class _MyLearningState extends State<MyLearning> {
           ListView.separated(
               shrinkWrap: true,
               itemBuilder: (context, index) => HorizontalCard(
+                    rating: 3,
+                    courseID: 1,
+                    isWishlist: false,
+                    index: index,
                     description: "",
                     author_name: "dshgh",
                     course_name: "nejdk",

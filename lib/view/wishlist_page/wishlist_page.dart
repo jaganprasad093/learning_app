@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
+import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:learning_app/view/homepage/widgets/horizontal_card.dart';
 import 'package:provider/provider.dart';
 
@@ -41,28 +43,55 @@ class _WishlistPageState extends State<WishlistPage> {
       ),
       body: provider.isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              itemBuilder: (context, index) {
-                var data =
-                    context.watch<Wishlistcontroller>().wishlistList[index];
-                var auther_name = data.autherName;
-                var course_name = data.courseName;
-                var photo = data.courseImage;
-                var price = data.price;
-                log("$photo");
-                return HorizontalCard(
-                  description: "",
-                  author_name: auther_name ?? "",
-                  course_name: course_name ?? "",
-                  photo: photo ?? "",
-                  price: price ?? 0,
-                  islearning: false,
-                );
-              },
-              separatorBuilder: (context, index) => SizedBox(
-                    height: 10,
-                  ),
-              itemCount: provider.wishlistList.length),
+          : provider.wishlistList.isEmpty
+              ? Center(child: Text("Wishlist is empty!"))
+              : SingleChildScrollView(
+                  child: ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var data = context
+                            .watch<Wishlistcontroller>()
+                            .wishlistList[index];
+                        var auther_name = data.autherName;
+                        var course_name = data.courseName;
+                        var photo = data.courseImage;
+                        var price = data.price;
+                        var courseID = data.courseId;
+                        var rating = data.rating;
+                        // log("$photo");
+                        log("length---${provider.wishlistList.length}");
+                        return InkWell(
+                          onTap: () {
+                            var id = provider.wishlistList[index].courseId;
+                            context
+                                .read<HomepageController>()
+                                .getCourseDetails(id);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailPage(id: id ?? 0),
+                                ));
+                          },
+                          child: HorizontalCard(
+                            rating: rating ?? 0,
+                            courseID: courseID ?? 0,
+                            isWishlist: true,
+                            index: index,
+                            description: "",
+                            author_name: auther_name ?? "",
+                            course_name: course_name ?? "",
+                            photo: photo ?? "",
+                            price: price ?? 0,
+                            islearning: false,
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                            height: 10,
+                          ),
+                      itemCount: provider.wishlistList.length),
+                ),
     );
   }
 }

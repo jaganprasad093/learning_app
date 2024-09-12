@@ -33,6 +33,7 @@ class HomepageController with ChangeNotifier {
   }
 
   getRecommendedCourses() async {
+    isLoading = true;
     final url = '${UrlConst.baseUrl}recommended_courses/';
     log(url);
     final response = await http.get(Uri.parse(url));
@@ -45,10 +46,12 @@ class HomepageController with ChangeNotifier {
     } else {
       log('Failed to load courses: ${response.statusCode}');
     }
+    isLoading = false;
   }
 
   // get banner images
   getBanners() async {
+    isLoading = true;
     final url = '${UrlConst.baseUrl}banner/';
     log(url);
     final response = await http.get(Uri.parse(url));
@@ -74,10 +77,12 @@ class HomepageController with ChangeNotifier {
     } else {
       log('Failed to load banners: ${response.statusCode}');
     }
+    isLoading = false;
     notifyListeners();
   }
 
   getTopCourses() async {
+    isLoading = true;
     final url = '${UrlConst.baseUrl}top_course_list/';
     log(url);
     final response = await http.get(Uri.parse(url));
@@ -88,9 +93,11 @@ class HomepageController with ChangeNotifier {
     } else {
       log('Failed to load courses: ${response.statusCode}');
     }
+    isLoading = false;
   }
 
   getFeaturedCourse() async {
+    isLoading = true;
     final url = '${UrlConst.baseUrl}featured-course/';
     log(url);
     final response = await http.get(Uri.parse(url));
@@ -101,9 +108,11 @@ class HomepageController with ChangeNotifier {
     } else {
       log('Failed to load courses: ${response.statusCode}');
     }
+    isLoading = false;
   }
 
   getCategoryList() async {
+    isLoading = true;
     final url = '${UrlConst.baseUrl}category_list/';
     log(url);
     final response = await http.get(Uri.parse(url));
@@ -114,6 +123,7 @@ class HomepageController with ChangeNotifier {
     } else {
       log('Failed to load courses: ${response.statusCode}');
     }
+    isLoading = false;
   }
 
   getRecentlyViewed() async {
@@ -126,13 +136,16 @@ class HomepageController with ChangeNotifier {
       'Authorization': 'Bearer $accessToken',
     };
     final response = await http.get(Uri.parse(url), headers: headers);
-
+    // log(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       var jsonResponse = jsonDecode(response.body);
+      var status = jsonResponse["status"];
+      log("status-------$status");
 
       recentlyViewedModel = RecentlyViewedModel.fromJson(data);
     } else {
+      log("recently viewed function ");
       log('Failed to load courses: ${response.statusCode}');
     }
     isLoading = false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/widgets/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class CourseCard extends StatelessWidget {
@@ -41,8 +42,8 @@ class CourseCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: 70,
-                width: 70,
+                height: 100,
+                width: 100,
                 child: Image.network(
                   photo,
                   fit: BoxFit.fill,
@@ -86,23 +87,22 @@ class CourseCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(
-                  "₹ " + "${price}",
-                  style: TextStyle(
-                      fontSize: 17,
-                      // fontWeight: FontWeight.bold,
-                      color: ColorConstants.primary_black.withOpacity(.7),
-                      decoration: TextDecoration.lineThrough),
-                ),
+                TotalAmount == price
+                    ? SizedBox()
+                    : Text(
+                        "₹ " + "${price}",
+                        style: TextStyle(
+                            fontSize: 17,
+                            // fontWeight: FontWeight.bold,
+                            color: ColorConstants.primary_black.withOpacity(.7),
+                            decoration: TextDecoration.lineThrough),
+                      ),
               ],
             ),
           ],
         ),
-        SizedBox(
-          height: 40,
-        ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -115,24 +115,41 @@ class CourseCard extends StatelessWidget {
                       .read<Cartcontroller>()
                       .removeCartItems(courseID, variantID);
                 },
-                child: Text(
-                  "Remove",
-                  style: TextStyle(color: ColorConstants.button_color),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Text(
+                    "Remove",
+                    style: TextStyle(color: ColorConstants.button_color),
+                  ),
                 ),
               ),
-              Text(
-                "Save for Later",
-                style: TextStyle(color: ColorConstants.button_color),
-              ),
+              // Text(
+              //   "Save for Later",
+              //   style: TextStyle(color: ColorConstants.button_color),
+              // ),
               InkWell(
                 onTap: () {
                   context
                       .read<Wishlistcontroller>()
                       .AddWishlist(courseID, price, variantID);
+                  // CustomSnackbar(
+                  //   message: "Added sucessfully",
+                  //   backgroundColor: Colors.green,
+                  // );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 3),
+                      content: Text("Item added wishlist sucessfully"),
+                    ),
+                  );
                 },
-                child: Text(
-                  "Move to Wishlist",
-                  style: TextStyle(color: ColorConstants.button_color),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Text(
+                    "Move to Wishlist",
+                    style: TextStyle(color: ColorConstants.button_color),
+                  ),
                 ),
               ),
             ],

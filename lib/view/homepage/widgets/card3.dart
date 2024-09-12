@@ -1,12 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
+import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/core/widgets/showdailog.dart';
 import 'package:provider/provider.dart';
 
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Card3 extends StatefulWidget {
   final int index;
@@ -21,6 +25,31 @@ class Card3 extends StatefulWidget {
 
 class _Card3State extends State<Card3> {
   bool isFavorite = false;
+  @override
+  void initState() {
+    ini();
+    super.initState();
+  }
+
+  List<String>? ids;
+  ini() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    ids = prefs.getStringList("courseID") ?? [];
+
+    var provider1 = context
+        .read<HomepageController>()
+        .featuredCoursesModel
+        ?.data?[widget.index]
+        .id;
+
+    if (provider1 != null && ids!.contains(provider1.toString())) {
+      setState(() {
+        isFavorite = true;
+      });
+      log("id3---$provider1");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var provider = context
@@ -78,6 +107,11 @@ class _Card3State extends State<Card3> {
             provider?.instructor?.name ?? "",
             // maxLines: 1,
             overflow: TextOverflow.ellipsis,
+          ),
+          Row(
+            children: [
+              StarRating(rating: provider?.ratingCount ?? 0),
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

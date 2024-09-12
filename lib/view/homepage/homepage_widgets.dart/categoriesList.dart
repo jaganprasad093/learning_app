@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/view/category_page/category_screen.dart';
 import 'package:provider/provider.dart';
 
 class Categorieslist extends StatelessWidget {
@@ -19,11 +22,20 @@ class Categorieslist extends StatelessWidget {
               "Categories",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
-            Text(
-              "See all",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: ColorConstants.button_color),
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, "/seeallcategories");
+              },
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Text(
+                  "See all",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: ColorConstants.button_color),
+                ),
+              ),
             ),
           ],
         ),
@@ -40,28 +52,41 @@ class Categorieslist extends StatelessWidget {
                   .watch<HomepageController>()
                   .categoryListModel
                   ?.data?[index];
-              return Container(
-                decoration: BoxDecoration(
-                  color: ColorConstants.button_color,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: EdgeInsets.all(2),
+              return InkWell(
+                onTap: () {
+                  var id = data?.id;
+                  log("Id equals----$id");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoryScreen(
+                          id: id ?? 0,
+                        ),
+                      ));
+                },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ColorConstants.button_color,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 5,
-                  ),
-                  child: Center(
-                    child: Text(
-                      data?.categoryName ?? "",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: ColorConstants.button_color,
-                          fontSize: 16),
+                  padding: EdgeInsets.all(2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 5,
+                    ),
+                    child: Center(
+                      child: Text(
+                        data?.categoryName ?? "",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: ColorConstants.button_color,
+                            fontSize: 16),
+                      ),
                     ),
                   ),
                 ),
