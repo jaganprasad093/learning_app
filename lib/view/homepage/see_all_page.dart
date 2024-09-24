@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/view/detail_page/detail_page.dart';

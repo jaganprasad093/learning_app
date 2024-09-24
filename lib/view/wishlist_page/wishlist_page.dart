@@ -70,7 +70,9 @@ class _WishlistPageState extends State<WishlistPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DetailPage(id: id ?? 0),
+                                  builder: (context) => DetailPage(
+                                    id: id ?? 0,
+                                  ),
                                 ));
                           },
                           child: HorizontalCard(

@@ -28,8 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // context.read<RegisterController>().reset();
     if (kDebugMode) {
-      emailController.text = 'test123@gmail.com';
-      passwordController.text = 'Jaan@1234';
+      emailController.text = 'ajmal@gmail.com';
+      passwordController.text = 'ajmal@123A';
     }
     super.initState();
   }

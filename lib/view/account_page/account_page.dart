@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
+import 'package:learning_app/view/my_orders/orders.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,6 +43,15 @@ class _AccountPageState extends State<AccountPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        leading: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BottomNavigation(initialIndex: 0),
+                  ));
+            },
+            child: Icon(Icons.arrow_back)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -128,7 +139,7 @@ class _AccountPageState extends State<AccountPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Checkout",
+                          "My cart",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
@@ -137,22 +148,31 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
-                Container(
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Orders",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      Icon(Icons.arrow_forward_ios_rounded)
-                    ],
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Orders(),
+                        ));
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "My orders",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
                   ),
                 ),
                 InkWell(

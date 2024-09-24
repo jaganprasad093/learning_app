@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/category_controller/category_controller.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/view/category_page/category_screen.dart';
-import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:provider/provider.dart';
 
 class Seeallcatergories extends StatelessWidget {

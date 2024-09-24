@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/controller/category_controller/category_controller.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/view/category_page/subCategories.dart';
 import 'package:learning_app/view/category_page/widgets/category_card.dart';
 import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:learning_app/view/detail_page/widgets/recent_seeall.dart';
@@ -30,8 +31,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   ini() async {
-    await context.read<HomepageController>().getRecentlyViewed();
     await context.read<CategoryController>().getCategoryItem(widget.id);
+    await context.read<HomepageController>().getRecentlyViewed();
   }
 
   @override
@@ -97,33 +98,54 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         SizedBox(
                           height: 10,
                         ),
-                        InkWell(
-                          onTap: () {},
-                          child: Container(
-                            // width: 150,
-                            decoration: BoxDecoration(
-                              color: ColorConstants.button_color,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: EdgeInsets.all(2),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 5,
-                              ),
-                              child: Text(
-                                "{ catProvider.categorymodel?.data?[index].subCategory.subCatehoryName}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.button_color,
-                                    fontSize: 16),
-                              ),
-                            ),
-                          ),
+                        SizedBox(
+                          height: 40,
+                          child: ListView.separated(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Subcategories(
+                                                id: catProvider
+                                                        .subCategoryList[index]
+                                                    ["id"]),
+                                          ));
+                                    },
+                                    child: Container(
+                                      // width: 150,
+                                      decoration: BoxDecoration(
+                                        color: ColorConstants.button_color,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: EdgeInsets.all(2),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 5,
+                                        ),
+                                        child: Text(
+                                          "${catProvider.subCategoryList[index]["sub_category_name"]}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  ColorConstants.button_color,
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              separatorBuilder: (context, index) => SizedBox(
+                                    width: 10,
+                                  ),
+                              itemCount: 2),
                         ),
                         SizedBox(
                           height: 10,

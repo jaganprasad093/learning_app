@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';

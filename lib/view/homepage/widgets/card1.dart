@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
-import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/widgets/custom_favoriteIcon.dart';
 import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/core/widgets/showdailog.dart';
 import 'package:provider/provider.dart';
@@ -70,31 +70,33 @@ class _Card1State extends State<Card1> {
             Positioned(
               right: 3,
               top: 3,
-              child: InkWell(
-                onTap: () {
-                  var course = provider?.id;
-                  var price = provider?.price?.toInt();
-                  var variant = 1;
-                  setState(() {
-                    isFavorite = !isFavorite;
-                    if (isFavorite) {
-                      context
-                          .read<Wishlistcontroller>()
-                          .AddWishlist(course, price, variant);
-                      ids?.add(course.toString());
-                    } else {
-                      context
-                          .read<Wishlistcontroller>()
-                          .removeWishlist(course, variant);
-                      ids?.remove(course.toString());
-                    }
-                  });
-                },
-                child: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border_sharp,
-                  color: isFavorite ? Colors.red : ColorConstants.primary_white,
-                ),
-              ),
+              child: FavoriteButton(
+                  courseId: provider?.id, price: provider?.price?.toInt()),
+              // child: InkWell(
+              //   onTap: () {
+              //     var course = provider?.id;
+              //     var price = provider?.price?.toInt();
+              //     var variant = 1;
+              //     setState(() {
+              //       isFavorite = !isFavorite;
+              //       if (isFavorite) {
+              //         context
+              //             .read<Wishlistcontroller>()
+              //             .AddWishlist(course, price, variant);
+              //         ids?.add(course.toString());
+              //       } else {
+              //         context
+              //             .read<Wishlistcontroller>()
+              //             .removeWishlist(course, variant, false, context);
+              //         ids?.remove(course.toString());
+              //       }
+              //     });
+              //   },
+              //   child: Icon(
+              //     isFavorite ? Icons.favorite : Icons.favorite_border_sharp,
+              //     color: isFavorite ? Colors.red : ColorConstants.primary_white,
+              //   ),
+              // ),
             )
           ]),
           Text(
@@ -125,6 +127,7 @@ class _Card1State extends State<Card1> {
                       () async {
                         await context.read<Cartcontroller>().AddCartItems(
                             courseID, variantID, price, context, false);
+                        context.read<Cartcontroller>().getCart();
                         Navigator.pop(context);
                       },
                     );

@@ -48,6 +48,7 @@ class Categorieslist extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             itemBuilder: (context, index) {
+              var provider = context.watch<HomepageController>();
               var data = context
                   .watch<HomepageController>()
                   .categoryListModel
@@ -56,6 +57,7 @@ class Categorieslist extends StatelessWidget {
                 onTap: () {
                   var id = data?.id;
                   log("Id equals----$id");
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(

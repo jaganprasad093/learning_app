@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/image_constants.dart';
-import 'package:learning_app/core/widgets/custom_button.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword({super.key});

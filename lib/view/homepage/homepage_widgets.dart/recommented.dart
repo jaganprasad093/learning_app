@@ -37,7 +37,9 @@ class Recommented extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailPage(id: id ?? 0),
+                              builder: (context) => DetailPage(
+                                id: id ?? 0,
+                              ),
                             ));
                         provider.getCourseDetails(id);
                       },

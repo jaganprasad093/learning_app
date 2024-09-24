@@ -5,6 +5,7 @@ import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/widgets/custom_button.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:learning_app/view/checkout_page/widgets/course_card.dart';
+import 'package:learning_app/view/checkout_page/widgets/checkout_bottomnavigation.dart';
 import 'package:learning_app/view/detail_page/detail_page.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     // context.read<Cartcontroller>().removeCartItems(5, 1);
-    context.read<Cartcontroller>().getCart();
+    // context.read<Cartcontroller>().getCart();
     // context.read<Cartcontroller>().AddCartItems(17, 8000);
     super.initState();
   }
@@ -27,16 +28,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     var provider = context.watch<Cartcontroller>();
+    log("lenth of cart---${provider.cartModel?.data?.cartItem?.length}");
     int TotalAmount;
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Checkout",
+            "Cart Items",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: provider.cartModel?.data?.grandTotal.toInt() == null ||
-                provider.cartModel?.data?.grandTotal.toInt() == 0
+        body: provider.cartModel?.data?.cartItem?.length == null ||
+                provider.cartModel?.data?.cartItem?.length == 0
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -180,7 +182,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             CustomButton(
                               text: "Complete Checkout",
                               onTap: () {
-                                showpayment();
+                                checkout().showBottomsheet(
+                                    context,
+                                    provider.cartModel?.data?.grandTotal
+                                        .toInt());
                               },
                             ),
                           ],
@@ -188,160 +193,4 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ),
               ));
   }
-
-  void showpayment() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "Summary",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Original Price",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        "₹699",
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Discount",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        "-₹1699",
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Divider(color: ColorConstants.primary_black.withOpacity(.5)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Total:",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "₹ 699",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: 'Coupon Code',
-                            contentPadding: EdgeInsets.all(8),
-                            isDense: true,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: ColorConstants.button_color,
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Apply",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Select a payment method:",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                  ),
-                  ListView.separated(
-                    separatorBuilder: (context, index) => SizedBox(height: 0),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: paymentTypes.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          paymentTypes[index],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        leading: Radio<int>(
-                          value: index,
-                          groupValue: selectedOption,
-                          activeColor: ColorConstants.button_color,
-                          splashRadius: 20,
-                          onChanged: (int? value) {
-                            setState(() {
-                              selectedOption = value!;
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  CustomButton(
-                    text: "Checkout",
-                    onTap: () {
-                      Navigator.pushNamed(context, "/otp");
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  int selectedOption = 0;
-  List paymentTypes = ["Gpay", "Credit card", "Debit card", "Net banking"];
 }

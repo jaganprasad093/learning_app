@@ -20,6 +20,8 @@ class CustomTextField extends StatelessWidget {
   final bool? readOnly;
   bool? enabled;
   final int? maxLines;
+  Function(String)? onChanged;
+  String? suffixText;
   final List<TextInputFormatter>? inputFormatters;
 
   CustomTextField({
@@ -37,9 +39,11 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.maxLength,
     this.minLines,
+    this.onChanged,
     this.readOnly,
     this.enabled,
     this.maxLines,
+    this.suffixText,
     this.inputFormatters,
   }) : super(key: key);
 
@@ -50,6 +54,7 @@ class CustomTextField extends StatelessWidget {
     return StatefulBuilder(
       builder: (context, setState) {
         return TextFormField(
+          onChanged: onChanged,
           inputFormatters: inputFormatters,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
@@ -63,6 +68,7 @@ class CustomTextField extends StatelessWidget {
           minLines: minLines,
           keyboardType: keyboardType,
           decoration: InputDecoration(
+            suffixText: suffixText,
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(

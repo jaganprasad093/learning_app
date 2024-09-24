@@ -5,6 +5,8 @@ import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/widgets/custom_dialog.dart';
+import 'package:learning_app/core/widgets/custom_favoriteIcon.dart';
 import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/core/widgets/showdailog.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,7 @@ class HorizontalCard extends StatefulWidget {
   final bool isWishlist;
   final int courseID;
   final int rating;
+  final bool? iscart;
   const HorizontalCard(
       {super.key,
       required this.islearning,
@@ -32,7 +35,8 @@ class HorizontalCard extends StatefulWidget {
       required this.index,
       required this.isWishlist,
       required this.courseID,
-      required this.rating});
+      required this.rating,
+      this.iscart});
 
   @override
   State<HorizontalCard> createState() => _HorizontalCardState();
@@ -69,6 +73,10 @@ class _HorizontalCardState extends State<HorizontalCard> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = context
+        .read<HomepageController>()
+        .recommendedModel
+        ?.data?[widget.index];
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,44 +92,48 @@ class _HorizontalCardState extends State<HorizontalCard> {
                 fit: BoxFit.fill,
               ),
             ),
-            widget.isWishlist
+            widget.iscart == true
                 ? SizedBox()
-                : Positioned(
-                    right: 3,
-                    top: 3,
-                    child: InkWell(
-                      onTap: () {
-                        // var provider = context
-                        //     .watch<HomepageController>()
-                        //     .recommendedModel
-                        //     ?.data?[widget.index];
-                        // var course = provider?.id;
-                        // var price = provider?.price?.toInt();
-                        var variant = 1;
-                        setState(() {
-                          isFavorite = !isFavorite;
-                          if (isFavorite) {
-                            context.read<Wishlistcontroller>().AddWishlist(
-                                widget.courseID, widget.price, variant);
-                            ids?.add(widget.courseID.toString());
-                          } else {
-                            context
-                                .read<Wishlistcontroller>()
-                                .removeWishlist(widget.courseID, variant);
-                            ids?.remove(widget.courseID.toString());
-                          }
-                        });
-                      },
-                      child: Icon(
-                        isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border_sharp,
-                        color: isFavorite
-                            ? Colors.red
-                            : ColorConstants.primary_white,
-                      ),
-                    ),
-                  )
+                : widget.isWishlist
+                    ? SizedBox()
+                    : Positioned(
+                        right: 3,
+                        top: 3,
+                        child: FavoriteButton(
+                            courseId: provider?.id,
+                            price: provider?.price?.toInt()),
+                        // child: InkWell(
+                        //   onTap: () {
+                        //     // var provider = context
+                        //     //     .watch<HomepageController>()
+                        //     //     .recommendedModel
+                        //     //     ?.data?[widget.index];
+                        //     // var course = provider?.id;
+                        //     // var price = provider?.price?.toInt();
+                        //     var variant = 1;
+                        //     setState(() {
+                        //       isFavorite = !isFavorite;
+                        //       if (isFavorite) {
+                        //         context.read<Wishlistcontroller>().AddWishlist(
+                        //             widget.courseID, widget.price, variant);
+                        //         ids?.add(widget.courseID.toString());
+                        //       } else {
+                        //         context.read<Wishlistcontroller>().removeWishlist(
+                        //             widget.courseID, variant, false, context);
+                        //         ids?.remove(widget.courseID.toString());
+                        //       }
+                        //     });
+                        //   },
+                        //   child: Icon(
+                        //     isFavorite
+                        //         ? Icons.favorite
+                        //         : Icons.favorite_border_sharp,
+                        //     color: isFavorite
+                        //         ? Colors.red
+                        //         : ColorConstants.primary_white,
+                        //   ),
+                        // ),
+                      )
           ]),
         ),
         Expanded(
@@ -154,10 +166,14 @@ class _HorizontalCardState extends State<HorizontalCard> {
                         color: ColorConstants.primary_black.withOpacity(.4)),
                     softWrap: true,
                   ),
-                  Text(
-                    widget.author_name,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                    softWrap: true,
+                  Expanded(
+                    child: Text(
+                      widget.author_name,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      softWrap: true,
+                    ),
                   ),
                 ],
               ),
@@ -183,45 +199,54 @@ class _HorizontalCardState extends State<HorizontalCard> {
                   SizedBox(
                     width: 160,
                   ),
-                  InkWell(
-                      onTap: () {
-                        var provider = context
-                            .watch<HomepageController>()
-                            .recommendedModel
-                            ?.data?[widget.index];
+                  widget.iscart == true
+                      ? SizedBox()
+                      : InkWell(
+                          onTap: () {
+                            var provider = context
+                                .read<HomepageController>()
+                                .recommendedModel
+                                ?.data?[widget.index];
 
-                        var courseID = provider?.id;
-                        var variantID = 1;
-                        var price = provider?.price;
-                        CustomShowdailog().showDialogWithFields(
-                          context,
-                          () async {
-                            await context.read<Cartcontroller>().AddCartItems(
-                                courseID, variantID, price, context, false);
-                            Navigator.pop(context);
+                            var courseID = provider?.id;
+                            var variantID = 1;
+                            var price = provider?.price;
+                            CustomShowdailog().showDialogWithFields(
+                              context,
+                              () async {
+                                await context
+                                    .read<Cartcontroller>()
+                                    .AddCartItems(courseID, variantID, price,
+                                        context, false);
+                                context.read<Cartcontroller>().getCart();
+                                Navigator.pop(context);
+                              },
+                            );
                           },
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Icon(Icons.local_mall),
-                      )),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Icon(Icons.local_mall),
+                          )),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Text(
-                      "Bestseller",
-                      style: TextStyle(color: ColorConstants.primary_white),
-                    ),
-                  ),
+                  widget.iscart == true
+                      ? SizedBox()
+                      : Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Text(
+                            "Bestseller",
+                            style:
+                                TextStyle(color: ColorConstants.primary_white),
+                          ),
+                        ),
                   SizedBox(
                     width: 115,
                   ),
@@ -230,10 +255,15 @@ class _HorizontalCardState extends State<HorizontalCard> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: InkWell(
                             onTap: () {
-                              context
-                                  .read<Wishlistcontroller>()
-                                  .removeWishlist(widget.courseID, 1);
-                              ids?.remove(widget.courseID.toString());
+                              CustomDialog().showDialogWithFields(context, () {
+                                context
+                                    .read<Wishlistcontroller>()
+                                    .removeWishlist(
+                                        widget.courseID, 1, false, context);
+                                Navigator.pop(context);
+                                ids?.remove(widget.courseID.toString());
+                              }, "Are you sure to remove ${widget.course_name} from wishlist",
+                                  "Submit");
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

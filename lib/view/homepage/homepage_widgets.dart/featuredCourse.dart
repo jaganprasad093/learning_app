@@ -41,7 +41,9 @@ class Featuredcourse extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailPage(id: id ?? 0),
+                              builder: (context) => DetailPage(
+                                id: id ?? 0,
+                              ),
                             ));
                       },
                       child: Card3(

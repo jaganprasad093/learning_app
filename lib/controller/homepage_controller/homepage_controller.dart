@@ -152,7 +152,7 @@ class HomepageController with ChangeNotifier {
     notifyListeners();
   }
 
-  getCourseDetails(var id) async {
+  Future<CourseDetailModel?> getCourseDetails(var id) async {
     isLoading = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString("access_token") ?? "";
@@ -169,11 +169,13 @@ class HomepageController with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       courseDetailModel = CourseDetailModel.fromJson(data);
+      return courseDetailModel;
     } else {
       log('Failed to load courses: ${response.statusCode}');
     }
     getRecentlyViewed();
     isLoading = false;
     notifyListeners();
+    return null;
   }
 }

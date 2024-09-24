@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/widgets/custom_star.dart';
 
 class CategoryCard extends StatelessWidget {

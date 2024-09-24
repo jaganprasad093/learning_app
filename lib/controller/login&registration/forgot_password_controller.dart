@@ -151,7 +151,6 @@ class ForgotPasswordController with ChangeNotifier {
   socialLogin(var email, var name, var user_id, BuildContext context) async {
     isLoading = true;
     final url = 'http://learningapp.e8demo.com/api/social_login/';
-
     try {
       final response = await http.post(
         Uri.parse(url),

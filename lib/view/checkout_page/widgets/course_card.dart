@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
-import 'package:learning_app/core/widgets/custom_snackbar.dart';
+import 'package:learning_app/core/widgets/custom_dialog.dart';
 import 'package:provider/provider.dart';
 
 class CourseCard extends StatelessWidget {
@@ -111,9 +111,13 @@ class CourseCard extends StatelessWidget {
               // ),
               InkWell(
                 onTap: () {
-                  context
-                      .read<Cartcontroller>()
-                      .removeCartItems(courseID, variantID);
+                  CustomDialog().showDialogWithFields(context, () {
+                    context
+                        .read<Cartcontroller>()
+                        .removeCartItems(courseID, variantID);
+                    Navigator.pop(context);
+                  }, "Are you sure remove the $course_name from cart",
+                      "Submit");
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(15),

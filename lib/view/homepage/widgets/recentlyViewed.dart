@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
-import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/core/widgets/custom_favoriteIcon.dart';
 import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/core/widgets/showdailog.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +18,7 @@ class SearchCard extends StatefulWidget {
 
 class _SearchCardState extends State<SearchCard> {
   bool isFavorite = false;
+
   List<String>? ids;
 
   @override
@@ -42,7 +41,7 @@ class _SearchCardState extends State<SearchCard> {
       setState(() {
         isFavorite = true;
       });
-      log("id---$provider1");
+      // log("id---$provider1");
     }
   }
 
@@ -60,8 +59,8 @@ class _SearchCardState extends State<SearchCard> {
             color: ColorConstants.primary_white,
           ))
         : Container(
-            height: 200,
-            width: 150,
+            height: 220,
+            width: 160,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,35 +81,38 @@ class _SearchCardState extends State<SearchCard> {
                   Positioned(
                     right: 3,
                     top: 3,
-                    child: InkWell(
-                      onTap: () {
-                        var course = provider2?.id;
-                        var price = provider2?.price?.toInt();
-                        var variant = 1;
-                        setState(() {
-                          isFavorite = !isFavorite;
-                          if (isFavorite) {
-                            context
-                                .read<Wishlistcontroller>()
-                                .AddWishlist(course, price, variant);
-                            ids?.add(course.toString());
-                          } else {
-                            context
-                                .read<Wishlistcontroller>()
-                                .removeWishlist(course, variant);
-                            ids?.remove(course.toString());
-                          }
-                        });
-                      },
-                      child: Icon(
-                        isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border_sharp,
-                        color: isFavorite
-                            ? Colors.red
-                            : ColorConstants.primary_white,
-                      ),
-                    ),
+                    child: FavoriteButton(
+                        courseId: provider2?.id,
+                        price: provider2?.price?.toInt()),
+                    // child: InkWell(
+                    //   onTap: () {
+                    //     var course = provider2?.id;
+                    //     var price = provider2?.price?.toInt();
+                    //     var variant = 1;
+                    //     setState(() {
+                    //       isFavorite = !isFavorite;
+                    //       if (isFavorite) {
+                    //         context
+                    //             .read<Wishlistcontroller>()
+                    //             .AddWishlist(course, price, variant);
+                    //         ids?.add(course.toString());
+                    //       } else {
+                    //         context.read<Wishlistcontroller>().removeWishlist(
+                    //             course, variant, false, context);
+                    //         ids?.remove(course.toString());
+                    //       }
+                    //     });
+                    //     context.read<Wishlistcontroller>().getWishlist();
+                    //   },
+                    //   child: Icon(
+                    //     isFavorite
+                    //         ? Icons.favorite
+                    //         : Icons.favorite_border_sharp,
+                    //     color: isFavorite
+                    //         ? Colors.red
+                    //         : ColorConstants.primary_white,
+                    //   ),
+                    // ),
                   )
                 ]),
                 Text(
@@ -120,6 +122,7 @@ class _SearchCardState extends State<SearchCard> {
                 ),
                 Text(
                   data?.instructorName ?? "",
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 Row(
@@ -150,6 +153,7 @@ class _SearchCardState extends State<SearchCard> {
                             () async {
                               await context.read<Cartcontroller>().AddCartItems(
                                   courseID, variantID, price, context, false);
+                              context.read<Cartcontroller>().getCart();
                               Navigator.pop(context);
                             },
                           );
