@@ -60,7 +60,7 @@ class _WishlistPageState extends State<WishlistPage> {
                         var courseID = data.courseId;
                         var rating = data.rating;
                         // log("$photo");
-                        log("length---${provider.wishlistList.length}");
+                        // log("length---${provider.wishlistList.length}");
                         return InkWell(
                           onTap: () {
                             var id = provider.wishlistList[index].courseId;

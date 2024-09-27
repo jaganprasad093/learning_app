@@ -27,15 +27,13 @@ class _OrdersState extends State<Orders> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ListView.separated(
-            itemBuilder: (context, index) => CustomOrdercard(index: index),
-            separatorBuilder: (context, index) => SizedBox(
-                  height: 40,
-                ),
-            itemCount: provider.orderModel?.data?.length ?? 0),
-      ),
+      body: ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          itemBuilder: (context, index) => CustomOrdercard(index: index),
+          separatorBuilder: (context, index) => SizedBox(
+                height: 40,
+              ),
+          itemCount: provider.orderModel?.data?.length ?? 0),
     );
   }
 }

@@ -304,7 +304,7 @@ class _EditProfileState extends State<EditProfile> {
                         //     dob: '1990-01-01',
                         //     address: '123 Main St',
                         //     context: context,
-                        //     // profilePic:
+                        //
                         //     profilePic: _imageFile);
 
                         // Navigator.pop(context);
@@ -356,7 +356,7 @@ class _EditProfileState extends State<EditProfile> {
         Overlay.of(context).context.findRenderObject() as RenderBox;
 
     final double menuWidth = 200;
-    final double menuHeight = 100; // Set a height for the menu (optional)
+    final double menuHeight = 100;
 
     final double rightPosition = MediaQuery.of(context).size.width - 40;
     final double topPosition = offset.dy;
@@ -365,8 +365,8 @@ class _EditProfileState extends State<EditProfile> {
       position: RelativeRect.fromLTRB(
         rightPosition,
         topPosition,
-        MediaQuery.of(context).size.width - rightPosition, // Right side
-        MediaQuery.of(context).size.height - topPosition, // Bottom side
+        MediaQuery.of(context).size.width - rightPosition,
+        MediaQuery.of(context).size.height - topPosition,
       ),
       items: [
         PopupMenuItem(

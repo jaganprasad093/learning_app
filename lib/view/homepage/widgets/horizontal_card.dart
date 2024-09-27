@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
@@ -10,7 +8,6 @@ import 'package:learning_app/core/widgets/custom_favoriteIcon.dart';
 import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/core/widgets/showdailog.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HorizontalCard extends StatefulWidget {
   final bool islearning;
@@ -49,34 +46,42 @@ class _HorizontalCardState extends State<HorizontalCard> {
   @override
   void initState() {
     super.initState();
-    // context.read<HomepageController>().getRecommendedCourses();
+    context.read<HomepageController>().getRecommendedCourses();
     ini();
   }
 
   ini() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    ids = prefs.getStringList("courseID") ?? [];
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // ids = prefs.getStringList("courseID") ?? [];
 
-    var provider1 = context
-        .read<HomepageController>()
-        .recommendedModel
-        ?.data?[widget.index]
-        .id;
+    // var provider1 = context
+    //     .read<HomepageController>()
+    //     .recommendedModel
+    //     ?.data?[widget.index]
+    //     .id;
 
-    if (provider1 != null && ids!.contains(provider1.toString())) {
-      setState(() {
-        isFavorite = true;
-      });
-      log("id---$provider1");
-    }
+    // if (provider1 != null && ids!.contains(provider1.toString())) {
+    //   setState(() {
+    //     isFavorite = true;
+    //   });
+    //   log("id---$provider1");
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    var provider = context
-        .read<HomepageController>()
-        .recommendedModel
-        ?.data?[widget.index];
+    // var provider = context
+    //     .read<HomepageController>()
+    //     .recommendedModel
+    //     ?.data?[widget.index];
+    var recommendedData =
+        context.read<HomepageController>().recommendedModel?.data;
+
+    if (widget.index < 0 || widget.index >= (recommendedData?.length ?? 0)) {
+      return SizedBox();
+    }
+
+    var provider = recommendedData?[widget.index];
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

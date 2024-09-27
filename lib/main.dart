@@ -4,12 +4,14 @@ import 'package:learning_app/controller/OrderController/OrderController.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/category_controller/category_controller.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
+import 'package:learning_app/controller/learning_controller/MyLearningController.dart';
 import 'package:learning_app/controller/login&registration/changepsd_controler.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/controller/login&registration/forgot_password_controller.dart';
 import 'package:learning_app/controller/notification_controller/notificationsScreenController.dart';
 import 'package:learning_app/controller/notification_controlller.dart';
 import 'package:learning_app/controller/login&registration/register_controller.dart';
+import 'package:learning_app/controller/review_controller/ReviewController.dart';
 import 'package:learning_app/controller/search_controller/SearchController.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
@@ -17,6 +19,7 @@ import 'package:learning_app/view/account_page/edit_profile/edit_profile.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:learning_app/view/checkout_page/checkout_page.dart';
 import 'package:learning_app/view/checkout_page/confrim_animated.dart/confrim_animated.dart';
+import 'package:learning_app/view/detail_page/widgets/review_screen.dart';
 import 'package:learning_app/view/homepage/homepage.dart';
 import 'package:learning_app/view/category_page/seeAllCatergories.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
@@ -88,7 +91,13 @@ class _LearningAppState extends State<LearningApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => Ordercontroller(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Mylearningcontroller(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Reviewcontroller(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -121,6 +130,9 @@ class _LearningAppState extends State<LearningApp> {
           '/forgotpsd': (context) => ForgotPsd2(),
           '/notification': (context) => Notificationscreen(),
           '/seeallcategories': (context) => Seeallcatergories(),
+          '/review': (context) => ReviewScreen(
+                courseID: 0,
+              ),
         },
       ),
     );

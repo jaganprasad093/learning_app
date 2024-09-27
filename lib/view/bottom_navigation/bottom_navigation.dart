@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
+import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
+import 'package:learning_app/controller/notification_controller/notificationsScreenController.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/view/account_page/account_page.dart';
@@ -26,9 +28,17 @@ class _BottomNavigationState extends State<BottomNavigation> {
   }
 
   init() async {
+    var provider = context.read<HomepageController>();
+    provider.getRecommendedCourses();
+    context.read<Notificationsscreencontroller>().getNotifications();
+    provider.getBanners();
+    provider.getTopCourses();
+    provider.getFeaturedCourse();
+    provider.getCategoryList();
+    context.read<Wishlistcontroller>().getWishlist();
+    context.read<Cartcontroller>().getCart();
     context.read<Cartcontroller>().getCart();
     await context.read<Wishlistcontroller>().getWishlist();
-
     setState(() {});
   }
 

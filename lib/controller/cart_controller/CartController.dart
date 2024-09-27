@@ -41,7 +41,7 @@ class Cartcontroller with ChangeNotifier {
         },
         body: jsonEncode(
             {"course": courseID, "variant": variantID, "price": price}));
-    log(response.body);
+    log("Respone of cart" + response.body);
     if (response.statusCode == 200) {
       // final data = json.decode(response.body);
       isDetail

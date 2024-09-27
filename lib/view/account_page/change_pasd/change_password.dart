@@ -95,7 +95,7 @@ class _ChangepasswordState extends State<Changepassword> {
                 // CustomButton(
                 //   onTap: () {
                 //     if (_formKey.currentState!.validate()) {
-                //       // Uncomment and implement your password change logic
+                //
                 //       context.read<ChangepsdControler>().changepsd(
                 //           context,
                 //           old_controller.text,
@@ -108,7 +108,6 @@ class _ChangepasswordState extends State<Changepassword> {
                 InkWell(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      // Uncomment and implement your password change logic
                       context.read<ChangepsdControler>().changepsd(
                           context,
                           old_controller.text,

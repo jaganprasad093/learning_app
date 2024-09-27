@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/edit_controller.dart';
 import 'package:learning_app/core/constants/color_constants.dart';
+import 'package:learning_app/view/account_page/about_app/AboutApp.dart';
+import 'package:learning_app/view/account_page/report_app/report.dart';
 import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:learning_app/view/my_orders/orders.dart';
 import 'package:provider/provider.dart';
@@ -176,6 +178,13 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
                 InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Aboutapp(),
+                        ));
+                  },
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   child: Container(
@@ -222,6 +231,35 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Report(),
+                        ));
+                  },
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Report ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 30,
                 ),
@@ -241,7 +279,6 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ],
             )
-            // Additional content can go here
           ],
         ),
       ),
@@ -299,7 +336,7 @@ class _AccountPageState extends State<AccountPage> {
                       onTap: () async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        prefs.clear();
+                        await prefs.clear();
                         Navigator.pushReplacementNamed(context, "/login");
                       },
                       child: Center(

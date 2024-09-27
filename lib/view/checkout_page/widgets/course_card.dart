@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/cart_controller/CartController.dart';
 import 'package:learning_app/controller/wishlist_controller/WishlistController.dart';
@@ -26,6 +28,8 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("price-----$price");
+    log("total price-----$TotalAmount");
     return Column(
       children: [
         Container(
@@ -75,7 +79,7 @@ class CourseCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      TotalAmount,
+                      price,
                       style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
@@ -90,7 +94,7 @@ class CourseCard extends StatelessWidget {
                 TotalAmount == price
                     ? SizedBox()
                     : Text(
-                        "₹ " + "${price}",
+                        "₹ " + "${TotalAmount}",
                         style: TextStyle(
                             fontSize: 17,
                             // fontWeight: FontWeight.bold,
@@ -116,8 +120,7 @@ class CourseCard extends StatelessWidget {
                         .read<Cartcontroller>()
                         .removeCartItems(courseID, variantID);
                     Navigator.pop(context);
-                  }, "Are you sure remove the $course_name from cart",
-                      "Submit");
+                  }, "Are you sure remove the $course_name from cart?", "Yes");
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(15),

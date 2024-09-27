@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomAlertDialog extends StatelessWidget {
-  final String message; // Message to be displayed
-  final VoidCallback onBackPressed; // Callback for the button action
+  final String message;
+  final VoidCallback onBackPressed;
 
   const CustomAlertDialog({
     Key? key,
@@ -20,7 +20,7 @@ class CustomAlertDialog extends StatelessWidget {
           children: [
             SizedBox(height: 20),
             Text(
-              message, // Use the message parameter
+              message,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -34,7 +34,7 @@ class CustomAlertDialog extends StatelessWidget {
       actions: [
         Center(
           child: InkWell(
-            onTap: onBackPressed, // Call the callback when tapped
+            onTap: onBackPressed,
             child: Container(
               height: 40,
               width: 100,

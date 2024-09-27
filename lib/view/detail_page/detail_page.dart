@@ -8,6 +8,7 @@ import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/model/courseDetail_model.dart';
 import 'package:learning_app/view/detail_page/widgets/custom_slide.dart';
 import 'package:learning_app/view/detail_page/widgets/recent_seeall.dart';
+import 'package:learning_app/view/detail_page/widgets/review_screen.dart';
 import 'package:learning_app/view/homepage/widgets/recommentions.dart';
 import 'package:learning_app/view/homepage/widgets/recentlyViewed.dart';
 import 'package:provider/provider.dart';
@@ -201,7 +202,8 @@ class _DetailPageState extends State<DetailPage> {
                                     ),
                                     value: selectedValue,
                                     onChanged: (newValue) {
-                                      TotalAmount = dataum.first.price.toInt();
+                                      var grandTotal =
+                                          dataum.first.price.toInt();
 
                                       if (newValue != null) {
                                         int varientPercent;
@@ -234,7 +236,7 @@ class _DetailPageState extends State<DetailPage> {
                                         var disAmount =
                                             ((varientPercent / 100) * amount)
                                                 .toInt();
-                                        TotalAmount = TotalAmount - disAmount;
+                                        TotalAmount = grandTotal - disAmount;
                                         log("Variant Percent: $varientPercent");
                                         log("Discount Amount: $disAmount");
                                         log("Total Amount: $TotalAmount");
@@ -244,6 +246,7 @@ class _DetailPageState extends State<DetailPage> {
 
                                         setState(() {
                                           selectedValue = newValue;
+                                          TotalAmount;
                                         });
                                         log("selected value---$selectedValue");
                                       }
@@ -294,7 +297,21 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           Row(
                             children: [
-                              StarRating(rating: dataum.first.ratingCount ?? 0),
+                              InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ReviewScreen(
+                                            courseID: widget.id,
+                                            rating: dataum.first.rating,
+                                            ratingCount: dataum.first.rating,
+                                            // totalReviees: dataum.first.,
+                                          ),
+                                        ));
+                                  },
+                                  child: StarRating(
+                                      rating: dataum.first.ratingCount ?? 0)),
                             ],
                           ),
                           SizedBox(
@@ -454,18 +471,29 @@ class _DetailPageState extends State<DetailPage> {
                                     }
 
                                     var price = dataum.first.price.toInt();
-
+                                    log("total amount while adding---$TotalAmount");
                                     if (TotalAmount == 0) {
                                       TotalAmount = price;
-                                      context
-                                          .read<Cartcontroller>()
-                                          .AddCartItems(courseID, variantID,
-                                              TotalAmount, context, true);
+
+                                      cartProvider.AddCartItems(
+                                          courseID,
+                                          variantID,
+                                          TotalAmount,
+                                          context,
+                                          true);
+                                      setState(() {
+                                        TotalAmount = 0;
+                                      });
                                     } else {
-                                      context
-                                          .read<Cartcontroller>()
-                                          .AddCartItems(courseID, variantID,
-                                              TotalAmount, context, true);
+                                      cartProvider.AddCartItems(
+                                          courseID,
+                                          variantID,
+                                          TotalAmount,
+                                          context,
+                                          true);
+                                      setState(() {
+                                        TotalAmount = 0;
+                                      });
                                     }
                                     await context
                                         .read<Cartcontroller>()

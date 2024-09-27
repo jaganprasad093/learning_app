@@ -40,11 +40,11 @@ class CustomDialog {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Center(
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: Text(
                           "Cancel",
                           style: TextStyle(
@@ -55,16 +55,14 @@ class CustomDialog {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: onTap,
-                      child: Center(
-                        child: Text(
-                          submit,
-                          style: TextStyle(
-                            color: ColorConstants.button_color,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                    TextButton(
+                      onPressed: onTap,
+                      child: Text(
+                        submit,
+                        style: TextStyle(
+                          color: ColorConstants.button_color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
                       ),
                     ),

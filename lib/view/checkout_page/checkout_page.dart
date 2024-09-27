@@ -20,7 +20,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     // context.read<Cartcontroller>().removeCartItems(5, 1);
-    // context.read<Cartcontroller>().getCart();
+    context.read<Cartcontroller>().getCart();
     // context.read<Cartcontroller>().AddCartItems(17, 8000);
     super.initState();
   }
@@ -137,16 +137,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         var selectedVarient =
                                             data?.section?.name;
                                         var price = data?.price.toInt();
+
                                         int variantPercent;
                                         variantPercent = data
                                                 ?.section?.amountPerc
                                                 ?.toInt() ??
                                             0;
-                                        var disAmount =
-                                            ((variantPercent / 100) * price)
-                                                .toInt();
-                                        TotalAmount = price - disAmount;
-                                        log("discount amount---$TotalAmount");
+                                        // var disAmount =
+                                        //     ((variantPercent / 100) * price)
+                                        //         .toInt();
+                                        // TotalAmount = price + disAmount;
+
+                                        calculateOriginalPrice(
+                                            currentPrice, discountPercentage) {
+                                          var discountFactor =
+                                              1 - (discountPercentage / 100);
+                                          return currentPrice / discountFactor;
+                                        }
+
+                                        ;
+
+                                        TotalAmount = calculateOriginalPrice(
+                                                price, variantPercent)
+                                            .toInt();
+
+                                        log(" total amount---$TotalAmount");
                                         return InkWell(
                                           onTap: () {
                                             Navigator.push(

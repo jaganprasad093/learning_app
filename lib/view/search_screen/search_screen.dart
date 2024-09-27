@@ -73,7 +73,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 provider.isLoading
                     ? Center(child: CircularProgressIndicator())
                     : provider.isEmpty
-                        ? Center(child: Text("No result fount !"))
+                        ? Center(
+                            child: Container(
+                                height: 400,
+                                child:
+                                    Center(child: Text("No result fount !"))))
                         : GridView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
