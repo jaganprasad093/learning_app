@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/learning_controller/MyLearningController.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
-import 'package:learning_app/view/bottom_navigation/bottom_navigation.dart';
 import 'package:learning_app/view/homepage/widgets/horizontal_card.dart';
 import 'package:learning_app/view/my_learning/widgets/LearningDetails.dart';
 import 'package:provider/provider.dart';
@@ -63,7 +62,7 @@ class _MyLearningState extends State<MyLearning> {
                             : InkWell(
                                 onTap: () async {
                                   search_controller.clear();
-
+                                  provider.getMyLearnings();
                                   // provider
                                   //     .searchData(search_controller.text);
                                 },

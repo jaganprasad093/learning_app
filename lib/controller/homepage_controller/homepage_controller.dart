@@ -40,7 +40,7 @@ class HomepageController with ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      var jsonResponse = jsonDecode(response.body);
+      // var jsonResponse = jsonDecode(response.body);
 
       recommendedModel = RecommendedModel.fromJson(data);
     } else {

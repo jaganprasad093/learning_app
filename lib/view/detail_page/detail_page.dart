@@ -305,7 +305,8 @@ class _DetailPageState extends State<DetailPage> {
                                           builder: (context) => ReviewScreen(
                                             courseID: widget.id,
                                             rating: dataum.first.rating,
-                                            ratingCount: dataum.first.rating,
+                                            ratingCount:
+                                                dataum.first.ratingCount,
                                             // totalReviees: dataum.first.,
                                           ),
                                         ));

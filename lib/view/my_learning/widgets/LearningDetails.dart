@@ -118,128 +118,136 @@ class _LearningdetailsState extends State<Learningdetails> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: provider.learningDetailModel?.status != "success"
-            ? Center(child: Text("Topics Not Found !"))
-            : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Container(
-                    //     height: 220,
-                    //     child: Chewie(controller: chewieController!)),
-                    if (chewieController != null &&
-                        chewieController!
-                            .videoPlayerController.value.isInitialized)
-                      Container(
-                        height: 220,
-                        child: Chewie(controller: chewieController!),
-                      )
-                    else
-                      Container(
-                        height: 220,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddReview(
-                                    course_id: widget.courseID,
-                                    courseName: widget.courseName,
-                                  ),
-                                ));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: StarRating(
-                                size: 23,
-                                rating: data?.data?[initialIndex].rating ?? 0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      data?.data?[initialIndex].topicName ?? "",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                    ),
-                    ReadMoreText(
-                      data?.data?[initialIndex].description ?? "",
-                      trimMode: TrimMode.Line,
-                      trimLines: 2,
-                      colorClickableText: Colors.pink,
-                      lessStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: ColorConstants.button_color),
-                      trimCollapsedText: 'See more',
-                      trimExpandedText: ' Show less',
-                      moreStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: ColorConstants.button_color),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Container(
-                        height: .5,
-                        color: ColorConstants.primary_black,
-                      ),
-                    ),
-                    ListView.separated(
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          var data1 =
-                              provider.learningDetailModel?.data?[index];
-                          String watchDuration = data1?.watchDuration ?? "";
-                          watchDuration = watchDuration.substring(
-                              0, watchDuration.length - 6);
-                          var videoDuration = data1?.videoDuration ?? "";
-                          log("watch---$watchDuration,video---$videoDuration");
-                          var percentage = provider.percentageCalculator(
-                              watchDuration, videoDuration);
-                          log("percentage====$percentage");
-                          return InkWell(
-                            onTap: () {
-                              log("id---${widget.courseID}");
-
-                              // log("Percentage: $percentage");
-
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) => Learningdetails(
-                              //         courseID: data1?.id ?? 0,
-                              //       ),
-                              //     ));
-
-                              setState(() {
-                                initialIndex = index;
-                              });
-                              log("index----$index");
-                              initializeVideoPlayer(index);
-                            },
-                            child: Mylearningwidget(
-                              percentage: percentage,
-                              courseName: data1?.topicName ?? "",
-                              photo: data1?.thumbnail ?? "",
+      body: provider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: provider.learningDetailModel?.status != "success"
+                  ? Center(child: Text("Topics Not Found !"))
+                  : SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Container(
+                          //     height: 220,
+                          //     child: Chewie(controller: chewieController!)),
+                          if (chewieController != null &&
+                              chewieController!
+                                  .videoPlayerController.value.isInitialized)
+                            Container(
+                              height: 220,
+                              child: Chewie(controller: chewieController!),
+                            )
+                          else
+                            Container(
+                              height: 220,
+                              child: Center(child: CircularProgressIndicator()),
                             ),
-                          );
-                        },
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 10),
-                        itemCount:
-                            provider.learningDetailModel?.data?.length ?? 0)
-                  ],
-                ),
-              ),
-      ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AddReview(
+                                          course_id: widget.courseID,
+                                          courseName: widget.courseName,
+                                        ),
+                                      ));
+                                },
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  child: StarRating(
+                                      size: 23,
+                                      rating:
+                                          data?.data?[initialIndex].rating ??
+                                              0),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            data?.data?[initialIndex].topicName ?? "",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 22),
+                          ),
+                          ReadMoreText(
+                            data?.data?[initialIndex].description ?? "",
+                            trimMode: TrimMode.Line,
+                            trimLines: 2,
+                            colorClickableText: Colors.pink,
+                            lessStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: ColorConstants.button_color),
+                            trimCollapsedText: 'See more',
+                            trimExpandedText: ' Show less',
+                            moreStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: ColorConstants.button_color),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: Container(
+                              height: .5,
+                              color: ColorConstants.primary_black,
+                            ),
+                          ),
+                          ListView.separated(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                var data1 =
+                                    provider.learningDetailModel?.data?[index];
+                                String watchDuration =
+                                    data1?.watchDuration ?? "";
+                                watchDuration = watchDuration.substring(
+                                    0, watchDuration.length - 6);
+                                var videoDuration = data1?.videoDuration ?? "";
+                                log("watch---$watchDuration,video---$videoDuration");
+                                var percentage = provider.percentageCalculator(
+                                    watchDuration, videoDuration);
+                                log("percentage====$percentage");
+                                return InkWell(
+                                  onTap: () {
+                                    log("id---${widget.courseID}");
+
+                                    // log("Percentage: $percentage");
+
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) => Learningdetails(
+                                    //         courseID: data1?.id ?? 0,
+                                    //       ),
+                                    //     ));
+
+                                    setState(() {
+                                      initialIndex = index;
+                                    });
+                                    log("index----$index");
+                                    initializeVideoPlayer(index);
+                                  },
+                                  child: Mylearningwidget(
+                                    percentage: percentage,
+                                    courseName: data1?.topicName ?? "",
+                                    photo: data1?.thumbnail ?? "",
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: 10),
+                              itemCount:
+                                  provider.learningDetailModel?.data?.length ??
+                                      0)
+                        ],
+                      ),
+                    ),
+            ),
     );
   }
 }

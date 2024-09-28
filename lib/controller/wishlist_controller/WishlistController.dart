@@ -114,7 +114,7 @@ class Wishlistcontroller with ChangeNotifier {
       'Authorization': 'Bearer $accessToken',
     };
     final response = await http.get(Uri.parse(url), headers: headers);
-    // log("response----${response.body}");
+    log("response wishlist----${response.body}");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       wishlistList = (data['data']["wishlist"] as List)
@@ -126,15 +126,12 @@ class Wishlistcontroller with ChangeNotifier {
           wishlistList.map((item) => item.courseId.toString()).toList();
       await prefs.setStringList('courseID', courseIds);
       favoriteIds = courseIds;
-
       log("favorire ids --- $favoriteIds");
     } else {
       log('response----${response.statusCode}');
     }
     // log('wishlist length -- ${wishlistList.length}');
-
     isLoading = false;
-
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   notifyListeners();
     // });

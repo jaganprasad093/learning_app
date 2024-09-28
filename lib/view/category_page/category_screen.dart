@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:learning_app/controller/category_controller/category_controller.dart';
 import 'package:learning_app/controller/homepage_controller/homepage_controller.dart';
@@ -48,10 +47,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: categoryProv?.message != "success"
-          ? Center(child: Text("No data found !"))
-          : catProvider.isLoading
-              ? Center(child: CircularProgressIndicator())
+      body: catProvider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : categoryProv?.message != "success"
+              ? Center(child: Text("No data found !"))
               : SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -71,13 +70,24 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 // var offerPrice = data?.offerPrice;
                                 var price = data?.price;
                                 var photo = data?.thumbnail?.fullSize;
+                                var id = data?.id ?? 0;
                                 log("data----$data");
-                                return CategoryCard(
-                                  course_name: course_name ?? "",
-                                  // offerPrice: 750,
-                                  price: price ?? 0,
-                                  rating: rating ?? 0,
-                                  photo: photo ?? "",
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailPage(id: id),
+                                        ));
+                                  },
+                                  child: CategoryCard(
+                                    course_name: course_name ?? "",
+                                    // offerPrice: 750,
+                                    price: price ?? 0,
+                                    rating: rating ?? 0,
+                                    photo: photo ?? "",
+                                  ),
                                 );
                               },
                               separatorBuilder: (context, index) => SizedBox(

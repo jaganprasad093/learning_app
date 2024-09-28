@@ -77,7 +77,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Container(
                                 height: 400,
                                 child:
-                                    Center(child: Text("No result fount !"))))
+                                    Center(child: Text("No result found !"))))
                         : GridView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),

@@ -178,35 +178,6 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Aboutapp(),
-                        ));
-                  },
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  child: Container(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "About app",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ],
-                        ),
-                        Icon(Icons.arrow_forward_ios_rounded)
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   onTap: () {
@@ -250,6 +221,35 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             Text(
                               "Report ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded)
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Aboutapp(),
+                        ));
+                  },
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "About app",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
@@ -361,6 +361,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   // delete accout function
+
   void deleteAccount() {
     showDialog(
       context: context,

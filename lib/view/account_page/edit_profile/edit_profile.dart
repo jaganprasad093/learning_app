@@ -352,11 +352,11 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void showbuttonMenu(BuildContext context, Offset offset) {
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+    // final RenderBox overlay =
+    //     Overlay.of(context).context.findRenderObject() as RenderBox;
 
-    final double menuWidth = 200;
-    final double menuHeight = 100;
+    // final double menuWidth = 200;
+    // final double menuHeight = 100;
 
     final double rightPosition = MediaQuery.of(context).size.width - 40;
     final double topPosition = offset.dy;

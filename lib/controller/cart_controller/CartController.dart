@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:learning_app/core/constants/color_constants.dart';
 import 'package:learning_app/core/constants/url_const.dart';
 import 'package:learning_app/model/cart_model.dart';
 import 'package:learning_app/model/checkoutModel.dart';
@@ -54,6 +55,12 @@ class Cartcontroller with ChangeNotifier {
           : log(" snackbar is shown");
       // courseDetailModel = CourseDetailModel.fromJson(data);
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: ColorConstants.button_color,
+          content: Text("Course is already purchased !"),
+        ),
+      );
       log('Failed to load courses: ${response.statusCode}');
     }
     isLoading = false;
@@ -64,10 +71,10 @@ class Cartcontroller with ChangeNotifier {
     isLoading = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString("access_token") ?? "";
-    Map<String, dynamic> data = {
-      "course": courseID.toString(),
-      "variant": variantID.toString(),
-    };
+    // Map<String, dynamic> data = {
+    //   "course": courseID.toString(),
+    //   "variant": variantID.toString(),
+    // };
     var response = await http.put(
         Uri.parse("http://learningapp.e8demo.com/api/add_to_cart/"),
         headers: {

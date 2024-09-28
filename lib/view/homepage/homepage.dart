@@ -189,7 +189,7 @@ class _HomepageState extends State<Homepage> {
                                 ),
                               ),
                               Text(
-                                  "From critical skills to technical topics, Udemy supports your professional development"),
+                                  "From critical skills to technical topics, e-learning supports your professional development"),
                             ],
                           ),
                           SizedBox(

@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:learning_app/controller/review_controller/ReviewController.dart';
 import 'package:learning_app/core/widgets/custom_button.dart';
+import 'package:learning_app/core/widgets/custom_star.dart';
 import 'package:learning_app/core/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +25,7 @@ class _AddReviewState extends State<AddReview> {
   @override
   void initState() {
     // context.read<Reviewcontroller>().getReviews(widget.courseID);
+    context.read<Reviewcontroller>().getReviews(widget.course_id);
     super.initState();
   }
 
@@ -90,6 +93,7 @@ class _AddReviewState extends State<AddReview> {
                       SizedBox(
                         height: 40,
                       ),
+
                       Text(
                         "Tell us more (optional)",
                         style: TextStyle(
@@ -99,6 +103,7 @@ class _AddReviewState extends State<AddReview> {
                         height: 10,
                       ),
                       CustomTextField(
+                          maxLines: 3,
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
                               return 'Enter the rating';
@@ -107,11 +112,12 @@ class _AddReviewState extends State<AddReview> {
                           controller: RatingController,
                           hintText: "Why this rating ?"),
                       SizedBox(
-                        height: 300,
+                        height: 40,
                       ),
                     ],
                   ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomButton(
                         text: "Submit",
@@ -122,8 +128,72 @@ class _AddReviewState extends State<AddReview> {
                         },
                       ),
                       SizedBox(
-                        height: 40,
+                        height: 60,
                       ),
+                      Text("Popular reviews",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.black,
+                          )),
+                      Divider(),
+                      ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsetsDirectional.only(top: 10),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          var data = provider.reviewsModel?.data?[index];
+                          String inputDate = data?.createdAt.toString() ?? "";
+                          DateTime parsedDate = DateTime.parse(inputDate);
+                          String formattedDate =
+                              DateFormat('dd-MM-yyyy').format(parsedDate);
+
+                          return Card(
+                            elevation: 5,
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        StarRating(rating: data?.rating ?? 0),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          formattedDate,
+                                          style: TextStyle(
+                                            color: Colors.black.withOpacity(.5),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    data?.review ?? "",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 20),
+                        itemCount: provider.reviewsModel?.data?.length ?? 0,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      )
                     ],
                   )
                 ],

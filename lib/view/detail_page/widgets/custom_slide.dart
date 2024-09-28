@@ -40,7 +40,7 @@ class _CustomSlideImageState extends State<CustomSlideImage> {
 
     chewieController = ChewieController(
       videoPlayerController: videoPlayerController,
-      autoPlay: true,
+      autoPlay: false,
       looping: true,
       materialProgressColors: ChewieProgressColors(
           // playedColor: Colors.red,

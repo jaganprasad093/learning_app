@@ -19,7 +19,7 @@ class _AboutappState extends State<Aboutapp> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = context.read<Reviewcontroller>();
+    var provider = context.watch<Reviewcontroller>();
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -27,34 +27,40 @@ class _AboutappState extends State<Aboutapp> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: ListView.separated(
-            itemBuilder: (context, index) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        provider.aboutModel?.data?[index].title ?? "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 19),
+        body: provider.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.separated(
+                itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            provider.aboutModel?.data?[index].title ?? "",
+                            style: TextStyle(
+                                color: ColorConstants.primary_black
+                                    .withOpacity(.8),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 19),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            provider.aboutModel?.data?[index].aboutApp ?? "",
+                            style: TextStyle(
+                                color: ColorConstants.primary_black
+                                    .withOpacity(.6),
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16),
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        provider.aboutModel?.data?[index].aboutApp ?? "",
-                        style: TextStyle(
-                            color: ColorConstants.primary_black.withOpacity(.9),
-                            fontWeight: FontWeight.normal,
-                            fontSize: 19),
-                      )
-                    ],
-                  ),
-                ),
-            separatorBuilder: (context, index) => SizedBox(
-                  height: 10,
-                ),
-            itemCount: provider.aboutModel?.data?.length ?? 0));
+                    ),
+                separatorBuilder: (context, index) => SizedBox(
+                      height: 10,
+                    ),
+                itemCount: provider.aboutModel?.data?.length ?? 0));
   }
 }

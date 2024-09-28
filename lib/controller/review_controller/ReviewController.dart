@@ -69,7 +69,7 @@ class Reviewcontroller with ChangeNotifier {
     log("response----${response.body}");
 
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
+      // var jsonResponse = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: ColorConstants.button_color,
@@ -131,7 +131,7 @@ class Reviewcontroller with ChangeNotifier {
     final response =
         await http.post(Uri.parse(url), headers: headers, body: data);
     log("response----${response.body}");
-    var jsonResponse = jsonDecode(response.body);
+    // var jsonResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
